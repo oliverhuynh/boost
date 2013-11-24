@@ -379,7 +379,9 @@ function boost_expire_cache($urls) {
 
   foreach ($urls as $url) {
     // Check if the URL to be flushed matches our base URL
-    if (strpos($base_root, $url) == 0) {
+    // base_root: http://www.example.org
+    // url: http://www.example.org/node/123
+    if (strpos($url, $base_root) === 0) {
       $boost = boost_transform_url($url);
 
       // We need the extention for the filename
