@@ -388,6 +388,11 @@ function boost_expire_cache($urls) {
       $boost['header_info'] = boost_get_header_info();
       $boost['matched_header_info'] = boost_match_header_attributes($boost['header_info']);
 
+      // Issue #2135835 Cache may not be enabled for this type (html/xml/ajax)
+      if (! $boost['matched_header_info']['enabled']) {
+        continue;
+      }
+
       $filename = (isset($boost['filename']) ? $boost['filename'] . '.' . $boost['matched_header_info']['extension'] : NULL);
 
       if ($filename && file_exists($filename)) {
