@@ -326,7 +326,7 @@ function boost_exit($destination = NULL) {
 
     // Gzip support.
     if (BOOST_GZIP && $_boost['matched_header_info']['gzip']) {
-      // #1416214
+      // #1416214 https://drupal.org/node/1416214#comment-7225650
       // boost_write_file($_boost['filename'] . '.gz', gzencode($data, 9));
     }
   }

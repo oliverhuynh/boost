@@ -203,16 +203,18 @@ function boost_admin_htaccess_generate_htaccess() {
   $normal_count = 0;
   foreach ($enabled_file_extensions as $extension => $values) {
     $type = $values['content_type'];
-    if ($values['gzip']) {
-      $output['gzip'] .= "  RewriteCond $document_root$base_path$cache_dir/%{ENV:boostpath}/$server_name%{REQUEST_URI}$char%{QUERY_STRING}\.$extension\.gz -s\n";
-      $output['gzip'] .= "  RewriteRule .* $cache_dir/%{ENV:boostpath}/$server_name%{REQUEST_URI}$char%{QUERY_STRING}\.$extension\.gz [L,T=$type,E=no-gzip:1]\n";
-      $gzip_count++;
-    }
+// #1416214 - https://drupal.org/node/1416214#comment-7225650
+//    if ($values['gzip']) {
+//      $output['gzip'] .= "  RewriteCond $document_root$base_path$cache_dir/%{ENV:boostpath}/$server_name%{REQUEST_URI}$char%{QUERY_STRING}\.$extension\.gz -s\n";
+//      $output['gzip'] .= "  RewriteRule .* $cache_dir/%{ENV:boostpath}/$server_name%{REQUEST_URI}$char%{QUERY_STRING}\.$extension\.gz [L,T=$type,E=no-gzip:1]\n";
+//      $gzip_count++;
+//    }
     $output['normal'] .= "  RewriteCond $document_root$base_path$cache_dir/%{ENV:boostpath}/$server_name%{REQUEST_URI}$char%{QUERY_STRING}\.$extension -s\n";
     $output['normal'] .= "  RewriteRule .* $cache_dir/%{ENV:boostpath}/$server_name%{REQUEST_URI}$char%{QUERY_STRING}\.$extension [L,T=$type]\n";
     $normal_count++;
   }
   $skip = !empty($gzip_count) ? $normal_count + $gzip_count + 1 : $normal_count;
+   
 
   // Generate the rules
   $string  = "  ### BOOST START ###\n";
@@ -233,11 +235,13 @@ function boost_admin_htaccess_generate_htaccess() {
     $string .= "  RewriteCond %{ENV:REDIRECT_STATUS} 200\n";
     $string .= "  RewriteRule .* - [S=$skip]\n";
     $string .= "\n";
-    $string .= "  # GZIP\n";
-    $string .= "  RewriteCond %{HTTP:Accept-encoding} !gzip\n";
-    $string .= "  RewriteRule .* - [S=$gzip_count]\n";
-    $string .= $output['gzip'];
-    $string .= "\n";
+// Serving of .gz files disabled
+// #1416214 - https://drupal.org/node/1416214#comment-7225650
+//    $string .= "  # GZIP\n";
+//    $string .= "  RewriteCond %{HTTP:Accept-encoding} !gzip\n";
+//    $string .= "  RewriteRule .* - [S=$gzip_count]\n";
+//    $string .= $output['gzip'];
+//    $string .= "\n";
     $string .= "  # NORMAL\n";
     $string .= $output['normal'];
   }
