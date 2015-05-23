@@ -261,6 +261,17 @@ function boost_init() {
 }
 
 /**
+ * Implements hook_form_alter().
+ */
+function boost_form_alter(&$form, &$form_state, $form_id) {
+  global $_boost;
+
+  if (! empty($_boost['cache_this'])) {
+    $form['#immutable'] = TRUE;
+  }
+}
+
+/**
  * Implements hook_drupal_goto_alter().
  */
 function boost_drupal_goto_alter(&$path, &$options, &$http_response_code) {
