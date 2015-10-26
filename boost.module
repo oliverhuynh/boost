@@ -188,7 +188,7 @@ function boost_menu() {
 function boost_permission() {
   return array(
     'boost flush pages' => array(
-      'title' => t('Flush pages from Boost cache'), 
+      'title' => t('Flush pages from Boost cache'),
       'description' => t('Allow users to flush individual pages from the Boost cache using the Boost status block.'),
     ),
   );
@@ -199,7 +199,7 @@ function boost_permission() {
  */
 function boost_block_info() {
   $blocks['status'] = array(
-    'info' => t('Boost: Pages cache status'), 
+    'info' => t('Boost: Pages cache status'),
     'cache' => DRUPAL_NO_CACHE,
   );
 
