@@ -405,37 +405,24 @@ function boost_expire_cache($urls, $wildcards, $object_type, $object) {
         continue;
       }
 
-      // If wildcards are enabled, we'll glob for file/directory matches
-      $files = array();
+      // If wildcards are enabled, we'll need to create a wildcard pattern for globbing
       if ($wildcards[$key]) {
-        if (isset($boost['full_path']) && isset($boost['base_dir'])) {
-          $pattern = $boost['base_dir'] . $boost['full_path'] . '*';
-          $files = glob($pattern, GLOB_NOSORT); // no sort = better performance
-        }
+        $pattern = (isset($boost['filename']) ? $boost['filename'] . '*.' . $boost['matched_header_info']['extension'] : NULL);
       }
-      elseif (isset($boost['filename'])) {
-        // No wildcards, we're just going to flush a single file
-        $filename = $boost['filename'] . '.' . $boost['matched_header_info']['extension'];
-        if (file_exists($filename)) {
-          $files[] = $filename;
-        }
-        else {
-          boost_log('Could not delete the cache for !url, file !file does not exist.', array('!url' => $url, '!file' => $filename), WATCHDOG_DEBUG);
-          continue;
-        }
+      else {
+        $pattern = (isset($boost['filename']) ? $boost['filename'] . '.' . $boost['matched_header_info']['extension'] : NULL);
       }
 
       // Remove the files
+      $files = glob($pattern, GLOB_NOSORT);
+
       if ($files) {
         foreach ($files as $filename) {
-          if (is_dir($filename)) {
-            _boost_rmdir($filename);
-          }
-          elseif (unlink($filename)) {
+          if (unlink($filename)) {
             boost_log('Removed !file from the boost cache.', array('!file' => $filename), WATCHDOG_DEBUG);
           }
           else {
-            boost_log('Could not delete !file from the boost cache. Check file permissions.', array('!file' => $filename), WATCHDOG_WARNING);
+            boost_log('Could not delete the cache for !url, file !file does not exist.', array('!url' => $url, '!file' => $filename), WATCHDOG_DEBUG);
           }
         }
       }
