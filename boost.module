@@ -385,15 +385,16 @@ function boost_flush_caches() {
 /**
  * Implements hook_expire_cache (from the 'expire' module)
  */
-function boost_expire_cache($urls) {
+function boost_expire_cache($urls, $wildcards, $object_type, $object) {
   global $base_root;
 
-  foreach ($urls as $url) {
+  foreach ($urls as $key => $url) {
     // Check if the URL to be flushed matches our base URL
     // base_root: http://www.example.org
     // url: http://www.example.org/node/123
     if (strpos($url, $base_root) === 0) {
-      $boost = boost_transform_url($url);
+      // Decode the url since it may have a query string that has been encoded
+      $boost = boost_transform_url(urldecode($url));
 
       // We need the extention for the filename
       $boost['header_info'] = boost_get_header_info();
@@ -404,18 +405,39 @@ function boost_expire_cache($urls) {
         continue;
       }
 
-      $filename = (isset($boost['filename']) ? $boost['filename'] . '.' . $boost['matched_header_info']['extension'] : NULL);
-
-      if ($filename && file_exists($filename)) {
-        if (unlink($filename)) {
-          boost_log('Removed !file from the boost cache.', array('!file' => $filename), WATCHDOG_DEBUG);
-        }
-        else {
-          boost_log('Could not delete !file from the boost cache. Check file permissions.', array('!file' => $filename), WATCHDOG_WARNING);
+      // If wildcards are enabled, we'll glob for file/directory matches
+      $files = array();
+      if ($wildcards[$key]) {
+        if (isset($boost['full_path']) && isset($boost['base_dir'])) {
+          $pattern = $boost['base_dir'] . $boost['full_path'] . '*';
+          $files = glob($pattern, GLOB_NOSORT); // no sort = better performance
         }
       }
-      else {
-        boost_log('Could not delete the cache for !url, file !file does not exist.', array('!url' => $url, '!file' => $filename), WATCHDOG_DEBUG);
+      elseif (isset($boost['filename'])) {
+        // No wildcards, we're just going to flush a single file
+        $filename = $boost['filename'] . '.' . $boost['matched_header_info']['extension'];
+        if (file_exists($filename)) {
+          $files[] = $filename;
+        }
+        else {
+          boost_log('Could not delete the cache for !url, file !file does not exist.', array('!url' => $url, '!file' => $filename), WATCHDOG_DEBUG);
+          continue;
+        }
+      }
+
+      // Remove the files
+      if ($files) {
+        foreach ($files as $filename) {
+          if (is_dir($filename)) {
+            _boost_rmdir($filename);
+          }
+          elseif (unlink($filename)) {
+            boost_log('Removed !file from the boost cache.', array('!file' => $filename), WATCHDOG_DEBUG);
+          }
+          else {
+            boost_log('Could not delete !file from the boost cache. Check file permissions.', array('!file' => $filename), WATCHDOG_WARNING);
+          }
+        }
       }
     }
   }
