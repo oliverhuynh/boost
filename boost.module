@@ -285,6 +285,12 @@ function boost_drupal_goto_alter(&$path, &$options, &$http_response_code) {
  */
 function boost_exit($destination = NULL) {
   global $_boost;
+
+  // Bypass caching on redirects (issues #1176534 and #1957532).
+  if(!empty($destination)) {
+    $_boost['is_cacheable'] = FALSE;
+  }
+
   // Bail out of caching.
   if (!isset($_boost['cache_this'])) {
     if (!isset($_boost['is_cacheable'])) {
