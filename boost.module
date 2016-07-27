@@ -1190,10 +1190,11 @@ function boost_boost_storage_types() {
       'application/rss+xml',
     ),
   );
+  // #1219484
   $types['text/javascript'] = array(
-    'title'           => t('AJAX/JSON'),
-    'description'     => t('JSON output, usually a response to a AJAX request'),
-    'extension'       => 'json',
+    'title'           => t('text/javascript'),
+    'description'     => t('Javascript output, usually a response to a AJAX request'),
+    'extension'       => 'js',
     'enabled'         => FALSE,
     'gzip'            => TRUE,
     'lifetime_max'    => 3600,
@@ -1202,6 +1203,31 @@ function boost_boost_storage_types() {
     'comment_end'    => ' */',
     'variants'        => array(),
   );
+  $types['application/javascript'] = array(
+    'title'           => t('AJAX/JavaScript'),
+    'description'     => t('Javascript output, usually a response to a AJAX request'),
+    'extension'       => 'json',
+    'enabled'         => FALSE,
+    'gzip'            => TRUE,
+    'lifetime_max'    => 3600,
+    'lifetime_min'    => 0,
+    'comment_start'  => '',
+    'comment_end'    => '',
+    'variants'        => array(),
+  );
+  $types['application/json'] = array(
+    'title'           => t('AJAX/JSON'),
+    'description'     => t('JSON output, usually a response to a AJAX request'),
+    'extension'       => 'json',
+    'enabled'         => FALSE,
+    'gzip'            => TRUE,
+    'lifetime_max'    => 3600,
+    'lifetime_min'    => 0,
+    'comment_start'  => '',
+    'comment_end'    => '',
+    'variants'        => array(),
+  );
+
   return $types;
 }
 
