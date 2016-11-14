@@ -339,6 +339,14 @@ function boost_exit($destination = NULL) {
     // Attach extension to filename.
     $_boost['filename'] .= '.' . $_boost['matched_header_info']['extension'];
     // Write to file.
+    $_boost['filename'] = str_ireplace('%2F', '/', $_boost['filename']);
+
+    // If the filename includes URL encoded characters create an extra copy of
+    // the file with the characters decoded.
+    if (rawurldecode($_boost['filename']) != $_boost['filename']) {
+      boost_write_file(rawurldecode($_boost['filename']), $data);
+    }
+
     boost_write_file($_boost['filename'], $data);
 
     // Gzip support.
