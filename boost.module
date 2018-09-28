@@ -285,7 +285,6 @@ function boost_drupal_goto_alter(&$path, &$options, &$http_response_code) {
  */
 function boost_exit($destination = NULL) {
   global $_boost;
-
   // Bypass caching on redirects (issues #1176534 and #1957532).
   if(!empty($destination)) {
     $_boost['is_cacheable'] = FALSE;
@@ -315,6 +314,7 @@ function boost_exit($destination = NULL) {
     return;
   }
 
+
   // Get the data to cache.
   $data = ob_get_contents();
 
@@ -335,19 +335,23 @@ function boost_exit($destination = NULL) {
   }
 
   // Write data to a file.
-  if ($_boost['filename']) {
-    // Attach extension to filename.
+  if (!isset($_boost['filenames'])) {
     $_boost['filename'] .= '.' . $_boost['matched_header_info']['extension'];
     // Write to file.
     $_boost['filename'] = str_ireplace('%2F', '/', $_boost['filename']);
+    $_boost['filenames'] = array(array($_boost['filename'], $_boost['directory']));
+  }
 
-    // If the filename includes URL encoded characters create an extra copy of
-    // the file with the characters decoded.
-    if (rawurldecode($_boost['filename']) != $_boost['filename']) {
-      boost_write_file(rawurldecode($_boost['filename']), $data);
+  foreach ($_boost['filenames'] as $f) {
+    $f += array(FALSE, FALSE, (isset($_boost['cachestatic']) && $_boost['cachestatic']));
+    list($filename, $directory, $cachestatic) = $f;
+    // Attach extension to filename.
+    if ($cachestatic) {
+      // Change location of cache to cache static
+      $data = str_replace('cache/', 'cache/static/', $data);
+      $filename = str_replace('cache/', 'cache/static/', $filename);
     }
-
-    boost_write_file($_boost['filename'], $data);
+    boost_write_file($filename, $data);
 
     // Gzip support.
     if (BOOST_GZIP && $_boost['matched_header_info']['gzip']) {
@@ -1625,4 +1629,5 @@ function boost_log($message, $variables, $severity = WATCHDOG_NOTICE) {
 
   watchdog('boost', $message, $variables, $severity);
 }
+
 
