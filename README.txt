@@ -11,6 +11,11 @@ CONTENTS OF THIS README
    * Support
    * Credits
 
+ONGOING WORK FOR 8.x
+-----------
+- Finalize other minor menus
+- Fix @TODO in code
+
 DESCRIPTION
 -----------
 
