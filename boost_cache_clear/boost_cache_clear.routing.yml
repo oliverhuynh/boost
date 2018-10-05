@@ -1,0 +1,7 @@
+boost_cache_clear.settings_form:
+  path: /admin/config/system/boost-cache-clear
+  defaults:
+    _title: 'Boost cache clear'
+    _form: \Drupal\boost_cache_clear\Form\BoostCacheClearSettingsForm
+  requirements:
+    _permission: config_boost_cache_clear

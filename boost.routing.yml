@@ -1,0 +1,42 @@
+boost.settings.form:
+  path: '/admin/config/system/boost'
+  defaults:
+    _form: '\Drupal\boost\Form\BoostAdminSettingsForm'
+    _title: 'Boost'
+  requirements:
+    _permission: 'administer site configuration'
+boost.admindebug.form:
+  path: '/admin/config/system/boost/debug'
+  defaults:
+    _form: '\Drupal\boost\Form\BoostAdminDebugForm'
+    _title: 'Debug'
+  requirements:
+    _permission: 'administer site configuration'
+boost.filesystem.form:
+  path: '/admin/config/system/boost/filesystem'
+  defaults:
+    _form: '\Drupal\boost\Form\BoostFileSystemForm'
+    _title: 'File System'
+  requirements:
+    _permission: 'administer site configuration'
+boost.htaccess.form:
+  path: '/admin/config/system/boost/htaccess'
+  defaults:
+    _form: '\Drupal\boost\Form\BoostHtAccessForm'
+    _title: '.htaccess'
+  requirements:
+    _permission: 'administer site configuration'
+boost.htaccessgenerator.form:
+  path: '/admin/config/system/boost/htaccess/generator'
+  defaults:
+    _form: '\Drupal\boost\Form\BoostHtAccessGeneratorForm'
+    _title: '.htaccess generator'
+  requirements:
+    _permission: 'administer site configuration'
+boost.expiration.form:
+  path: '/admin/config/system/boost/expiration'
+  defaults:
+    _form: '\Drupal\boost\Form\BoostExpirationForm'
+    _title: '.htaccess'
+  requirements:
+    _permission: 'administer site configuration'

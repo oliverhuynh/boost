@@ -1,0 +1,5 @@
+boost_cache_clear.settings_form:
+  route_name: boost_cache_clear.settings_form
+  title: 'Boost cache clear'
+  description: 'Clear Boost cache by passing their URL alias.'
+  parent: system.admin_config_system

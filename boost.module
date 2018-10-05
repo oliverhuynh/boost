@@ -110,75 +110,6 @@ define('BOOST_MATCH_SYMLINKS_OPTIONS', 1);
 function boost_menu() {
   $items = array();
   $path = drupal_get_path('module', 'boost');
-
-  $items['admin/config/system/boost'] = array(
-    'title' => 'Boost',
-    'description' => 'Configuration for Boost.',
-    'page callback' => 'drupal_get_form',
-    'page arguments' => array('boost_admin_settings'),
-    'access arguments' => array('administer site configuration'),
-    'type' => MENU_NORMAL_ITEM,
-    'file' => 'boost.admin.inc',
-    'file path' => $path,
-  );
-  $items['admin/config/system/boost/default'] = array(
-    'title' => 'Boost Settings',
-    'type' => MENU_DEFAULT_LOCAL_TASK,
-  );
-  $items['admin/config/system/boost/debug'] = array(
-    'title' => 'Debug',
-    'description' => 'Debug configuration for Boost.',
-    'page callback' => 'drupal_get_form',
-    'page arguments' => array('boost_admin_debug_settings'),
-    'access arguments' => array('administer site configuration'),
-    'type' => MENU_LOCAL_TASK,
-    'file' => 'boost.admin.debug.inc',
-    'file path' => $path,
-  );
-  $items['admin/config/system/boost/filesystem'] = array(
-    'title' => 'File System',
-    'description' => 'File system configuration for Boost.',
-    'page callback' => 'drupal_get_form',
-    'page arguments' => array('boost_admin_filesystem_settings'),
-    'access arguments' => array('administer site configuration'),
-    'type' => MENU_LOCAL_TASK,
-    'file' => 'boost.admin.filesystem.inc',
-    'file path' => $path,
-  );
-  $items['admin/config/system/boost/htaccess'] = array(
-    'title' => '.htaccess',
-    'description' => '.htaccess configuration for Boost.',
-    'page callback' => 'drupal_get_form',
-    'page arguments' => array('boost_admin_htaccess_settings'),
-    'access arguments' => array('administer site configuration'),
-    'type' => MENU_LOCAL_TASK,
-    'file' => 'boost.admin.htaccess.inc',
-    'file path' => $path,
-  );
-  $items['admin/config/system/boost/htaccess/default'] = array(
-    'title' => '.htaccess Settings',
-    'type' => MENU_DEFAULT_LOCAL_TASK,
-  );
-  $items['admin/config/system/boost/htaccess/generator'] = array(
-    'title' => '.htaccess Generation',
-    'description' => '.htaccess generation for Boost.',
-    'page callback' => 'drupal_get_form',
-    'page arguments' => array('boost_admin_htaccess_generation'),
-    'access arguments' => array('administer site configuration'),
-    'type' => MENU_LOCAL_TASK,
-    'file' => 'boost.admin.htaccess.inc',
-    'file path' => $path,
-  );
-  $items['admin/config/system/boost/expiration'] = array(
-    'title' => 'Cache Expiration',
-    'description' => 'Cache expiration configuration for Boost.',
-    'page callback' => 'drupal_get_form',
-    'page arguments' => array('boost_admin_expiration_settings'),
-    'access arguments' => array('administer site configuration'),
-    'type' => MENU_LOCAL_TASK,
-    'file' => 'boost.admin.expiration.inc',
-    'file path' => $path,
-  );
   $items['admin/config/system/boost/listmodules'] = array(
     'title' => 'Related Modules',
     'description' => ' Compatible Modules that add features to Boost.',
@@ -704,10 +635,18 @@ function boost_is_cacheable($parts, $request_type = 'normal') {
     if ($visibility < BOOST_VISIBILITY_PHP) {
       // Convert the alias to lowercase.
       $path = \Drupal\Component\Utility\Unicode::strtolower($alias);
+      $testpath = $path;
+      if ($testpath[0] == '/') {
+        $testpath = substr($testpath, 1);
+      }
+      $testnormal_path = $normal_path;
+      if ($testnormal_path[0] == '/') {
+        $testnormal_path = substr($testnormal_path, 1);
+      }
       // Compare the lowercase internal and lowercase path alias (if any).
-      $page_match = \Drupal::service('path.matcher')->matchPath($path, $pages);
+      $page_match = \Drupal::service('path.matcher')->matchPath($testpath, $pages);
       if ($path != $normal_path) {
-        $page_match = $page_match || \Drupal::service('path.matcher')->matchPath($normal_path, $pages);
+        $page_match = $page_match || \Drupal::service('path.matcher')->matchPath($testnormal_path, $pages);
       }
       // When 'boost_cacheability_option' has a value of 0 (BOOST_VISIBILITY_NOTLISTED),
       // Boost will cache all pages except those listed in 'boost_cacheability_pages'.
@@ -1188,7 +1127,7 @@ function boost_get_storage_types() {
   $types = array();
   foreach ($merged as $type => $values) {
     if ($values['title']) {
-      $title = $values['title'];
+      $title = (string) $values['title'];
       unset($values['title']);
       $types[$title][$type] = $values;
     }
