@@ -13,10 +13,14 @@
  */
 function boost_admin_debug_settings() {
 
-  $form['boost_message_debug'] = array(
+  // @FIXME
+// Could not extract the default value because it is either indeterminate, or
+// not scalar. You'll need to provide a default value in
+// config/install/boost.settings.yml and config/schema/boost.schema.yml.
+$form['boost_message_debug'] = array(
     '#type' => 'checkbox',
     '#title' => t('Send debug info for each request to watchdog.'),
-    '#default_value' => variable_get('boost_message_debug', BOOST_MESSAGE_DEBUG),
+    '#default_value' => \Drupal::config('boost.settings')->get('boost_message_debug'),
     '#description' => t('Only use for debugging purposes as this can fill up watchdog fairly quickly.'),
   );
 

@@ -6,6 +6,9 @@
  * webserver.
  */
 
+ use Drupal\Core\Url;
+ use Symfony\Component\HttpFoundation\Request;
+
 /**
  * Default cacheablily setting.
  */
@@ -94,8 +97,16 @@ define('BOOST_VISIBILITY_PHP', 2);
 define('BOOST_MATCH_SYMLINKS_OPTIONS', 1);
 
 /**
- * Implements hook_menu().
+ * @FIXME
+ * This implementation of hook_menu() cannot be automatically converted because
+ * it contains logic (i.e., branching statements, function calls, object
+ * instantiation, etc.) You will need to convert it manually. Sorry!
+ *
+ * For more information on how to convert hook_menu() to Drupal 8's new routing
+ * and linking systems, see https://api.drupal.org/api/drupal/core%21includes%21menu.inc/group/menu/8
  */
+
+
 function boost_menu() {
   $items = array();
   $path = drupal_get_path('module', 'boost');
@@ -233,28 +244,33 @@ function boost_init() {
 
   // Make sure the page is/should be cached according to our current configuration.
   // Start with the quick checks
-  if (   strpos($_SERVER['SCRIPT_FILENAME'], 'index.php') === FALSE
-      || $_SERVER['SERVER_SOFTWARE'] === 'PHP CLI'
-      || ($_SERVER['REQUEST_METHOD'] != 'GET' && $_SERVER['REQUEST_METHOD'] != 'HEAD')
-      || isset($_GET['nocache'])
-      || variable_get('maintenance_mode', 0)
-      || defined('MAINTENANCE_MODE')
-      || !empty($_SESSION['messages']) // do not cache pages with messages
-  ) {
-    $_boost['cache_this'] = FALSE;
-  }
-  else {
-    // More advanced checks
-    $_boost = boost_transform_url();
-    if (empty($_boost['menu_item']['status']) || $_boost['menu_item']['status'] != 200) {
-      $_boost['cache_this'] = FALSE;
-    }
-  }
+  // @FIXME
+// // @FIXME
+// // This looks like another module's variable. You'll need to rewrite this call
+// // to ensure that it uses the correct configuration object.
+// if (   strpos($_SERVER['SCRIPT_FILENAME'], 'index.php') === FALSE
+//       || $_SERVER['SERVER_SOFTWARE'] === 'PHP CLI'
+//       || ($_SERVER['REQUEST_METHOD'] != 'GET' && $_SERVER['REQUEST_METHOD'] != 'HEAD')
+//       || isset($_GET['nocache'])
+//       || variable_get('maintenance_mode', 0)
+//       || defined('MAINTENANCE_MODE')
+//       || !empty($_SESSION['messages']) // do not cache pages with messages
+//   ) {
+//     $_boost['cache_this'] = FALSE;
+//   }
+//   else {
+//     // More advanced checks
+//     $_boost = boost_transform_url();
+//     if (empty($_boost['menu_item']['status']) || $_boost['menu_item']['status'] != 200) {
+//       $_boost['cache_this'] = FALSE;
+//     }
+//   }
+
 
   // Give modules a chance to alter the cookie handler callback used.
   // hook_boost_cookie_handler_callback_alter
   $cookie_handler_callback = 'boost_cookie_handler';
-  drupal_alter('boost_cookie_handler_callback', $cookie_handler_callback);
+  \Drupal::moduleHandler()->alter('boost_cookie_handler_callback', $cookie_handler_callback);
   if (function_exists($cookie_handler_callback)) {
     $cookie_handler_callback();
   }
@@ -263,7 +279,7 @@ function boost_init() {
 /**
  * Implements hook_form_alter().
  */
-function boost_form_alter(&$form, &$form_state, $form_id) {
+function boost_form_alter(&$form, \Drupal\Core\Form\FormStateInterface &$form_state, $form_id) {
   global $_boost;
 
   if (! empty($_boost['cache_this'])) {
@@ -284,6 +300,8 @@ function boost_drupal_goto_alter(&$path, &$options, &$http_response_code) {
  * Implements hook_exit().
  */
 function boost_exit($destination = NULL) {
+  // @TODO: Oliver
+  return ;
   global $_boost;
   // Bypass caching on redirects (issues #1176534 and #1957532).
   if(!empty($destination)) {
@@ -330,7 +348,7 @@ function boost_exit($destination = NULL) {
     $expire = $_boost['matched_header_info']['lifetime_max'];
     $cached_at = date('Y-m-d H:i:s', REQUEST_TIME);
     $expires_at = date('Y-m-d H:i:s', REQUEST_TIME + $expire);
-    $note = "\n" . $_boost['matched_header_info']['comment_start'] . 'Page cached by Boost @ ' . $cached_at . ', expires @ ' . $expires_at . ', lifetime ' . format_interval($expire) . $_boost['matched_header_info']['comment_end'];
+    $note = "\n" . $_boost['matched_header_info']['comment_start'] . 'Page cached by Boost @ ' . $cached_at . ', expires @ ' . $expires_at . ', lifetime ' . \Drupal::service("date.formatter")->formatInterval($expire) . $_boost['matched_header_info']['comment_end'];
     $data .= $note;
   }
 
@@ -365,17 +383,18 @@ function boost_exit($destination = NULL) {
  * Implements hook_cron(). Performs periodic actions.
  */
 function boost_cron() {
+  // @TODO: Oliver
+  return ;
   // Remove expired files from the cache.
   global $_boost;
 
   // This was not invoked in hook_init because of the quick check to
   // avoid caching requests from the CLI
   $_boost = boost_transform_url();
-
-  if (isset($_boost['base_dir']) && variable_get('boost_expire_cron', BOOST_EXPIRE_CRON)) {
+if (isset($_boost['base_dir']) && \Drupal::config('boost.settings')->get('boost_expire_cron')) {
     $count = _boost_rmdir($_boost['base_dir'], FALSE);
-    if (variable_get('boost_message_debug', BOOST_MESSAGE_DEBUG)) {
-      watchdog('boost', 'Expired %count stale files from static page cache.', array('%count' => $count), WATCHDOG_NOTICE);
+    if (\Drupal::config('boost.settings')->get('boost_message_debug')) {
+      \Drupal::logger('boost')->notice('Expired %count stale files from static page cache.', array('%count' => $count));
     }
   }
 }
@@ -384,6 +403,8 @@ function boost_cron() {
  * Implements hook_flush_caches(). Deletes all static files.
  */
 function boost_flush_caches() {
+  // @TODO: Oliver
+  return ;
   // Remove all files from the cache
   global $_boost;
 
@@ -393,9 +414,9 @@ function boost_flush_caches() {
 
   // The lock_may_be_available() checks to see if the flush was requested by
   // the core cron, since we may want to ignore it (boost_ignore_flush)
-  if (isset($_boost['base_dir']) && (lock_may_be_available('cron') || variable_get('boost_ignore_flush', BOOST_IGNORE_FLUSH) == FALSE)) {
+  if (isset($_boost['base_dir']) && (lock_may_be_available('cron') || \Drupal::config('boost.settings')->get('boost_ignore_flush') == FALSE)) {
     $count = _boost_rmdir($_boost['base_dir'], TRUE);
-    watchdog('boost', 'Flushed all files (%count) from static page cache.', array('%count' => $count), WATCHDOG_NOTICE);
+    \Drupal::logger('boost')->notice('Flushed all files (%count) from static page cache.', array('%count' => $count));
   }
   return;
 }
@@ -452,6 +473,8 @@ function boost_expire_cache($urls, $wildcards, $object_type, $object) {
  * Implements hook_page_delivery_callback_alter().
  */
 function boost_page_delivery_callback_alter(&$callback, $set = FALSE) {
+  // @TODO: Oliver
+  return ;
   if ($callback == 'drupal_deliver_html_page') {
     $callback = 'boost_deliver_html_page';
   }
@@ -471,7 +494,7 @@ function boost_transform_url($url = NULL, $b_path = NULL) {
 
   // Set defaults if none passed in.
   if ($url === NULL) {
-    $url = $base_root . request_uri();
+    $url = $base_root . \Drupal::request()->getRequestUri();
   }
   if ($b_path == NULL) {
     $b_path = $base_path;
@@ -485,20 +508,26 @@ function boost_transform_url($url = NULL, $b_path = NULL) {
       return $items[$hash];
     }
     $parts['base_dir'] = boost_get_normal_cache_dir() . '/' . $parts['host'] . $b_path;
-    $parts['filename'] = $parts['base_dir'] . $parts['full_path'] . variable_get('boost_char', BOOST_CHAR) . $parts['query'];
+    $parts['filename'] = $parts['base_dir'] . $parts['full_path'] . \Drupal::config('boost.settings')->get('boost_char') . $parts['query'];
     $parts['directory'] = dirname($parts['filename']);
 
     // Get the internal path (node/8).
-    if (drupal_is_front_page()) {
-      $parts['normal_path'] = variable_get('site_frontpage', 'node');
+    if (\Drupal::service('path.matcher')->isFrontPage()) {
+      $parts['normal_path'] = Drupal::config('system.site')->get('page.front');
     }
     else {
-      $parts['normal_path'] = drupal_get_normal_path($parts['path']);
+      $parts['normal_path'] = \Drupal::service('path.alias_manager')->getPathByAlias($parts['path'], 'en');
     }
     // Get the alias (content/about-us).
-    $parts['path_alias'] = drupal_get_path_alias($parts['normal_path']);
+    // Ensure slash first
+    if (!$parts['normal_path'] || $parts['normal_path'][0] != '/') {
+      $parts['normal_path'] = '/' . $parts['normal_path'];
+    }
+    $parts['path_alias'] = \Drupal::service('path.alias_manager')->getAliasByPath($parts['normal_path'], 'en');
     // Get all args.
-    $args = arg(NULL, $parts['normal_path']);
+    $args = explode('/', $parts['normal_path']);
+    array_shift($args);
+
     // Prevent array warnings.
     $args[0] = empty($args[0]) ? '' : $args[0];
     $args[1] = empty($args[1]) ? '' : $args[1];
@@ -521,7 +550,7 @@ function boost_transform_url($url = NULL, $b_path = NULL) {
  * Returns the relative normal cache dir. cache/normal.
  */
 function boost_get_normal_cache_dir() {
-  return variable_get('boost_root_cache_dir', BOOST_ROOT_CACHE_DIR) . '/' . variable_get('boost_normal_dir', BOOST_NORMAL_DIR);
+  return \Drupal::config('boost.settings')->get('boost_root_cache_dir') . '/' . \Drupal::config('boost.settings')->get('boost_normal_dir');
 }
 
 /**
@@ -536,7 +565,7 @@ function boost_parse_url($url = NULL, $b_path = NULL) {
   global $base_root, $base_path;
   // Set defaults.
   if ($url === NULL) {
-    $url = $base_root . request_uri();
+    $url = $base_root . \Drupal::request()->getRequestUri();
   }
   if ($b_path == NULL) {
     $b_path = $base_path;
@@ -544,6 +573,8 @@ function boost_parse_url($url = NULL, $b_path = NULL) {
 
   // Parse url.
   $parts = parse_url($url);
+  /* Oliver fix bug of homepage */
+  $parts['path'] = (isset($parts['path']) && $parts['path']) ? $parts['path'] : '/';
   if (empty($parts['host']) || empty($parts['path'])) {
     return FALSE;
   }
@@ -556,12 +587,17 @@ function boost_parse_url($url = NULL, $b_path = NULL) {
   parse_str($parts['query'], $parts['query_array']);
 
   // Check if language prefix for urls is enabled.
-  if (drupal_multilingual() && variable_get('locale_language_negotiation_url_part') == LOCALE_LANGUAGE_NEGOTIATION_URL_PREFIX) {
-    // Get languages grouped by status and select only the enabled ones.
-    $languages = language_list('enabled');
-    $languages = $languages[1];
-    list($language, $parts['path']) = language_url_split_prefix($parts['path'], $languages);
-  }
+  // @TODO: Oliver fix multilanguage issue
+  // @FIXME
+// // @FIXME
+// // This looks like another module's variable. You'll need to rewrite this call
+// // to ensure that it uses the correct configuration object.if (drupal_multilingual() && variable_get('locale_language_negotiation_url_part') == LOCALE_LANGUAGE_NEGOTIATION_URL_PREFIX) {
+//     // Get languages grouped by status and select only the enabled ones.
+//     $languages = language_list('enabled');
+//     $languages = $languages[1];
+//     list($language, $parts['path']) = language_url_split_prefix($parts['path'], $languages);
+//   }
+
 
   // Get page number and info from the query string.
   if (!empty($parts['query_array'])) {
@@ -579,7 +615,7 @@ function boost_parse_url($url = NULL, $b_path = NULL) {
   }
 
   // Get fully decoded URL.
-  $decoded1 = urldecode($parts['base_path'] . $parts['path'] . variable_get('boost_char', BOOST_CHAR) . $parts['query']);
+  $decoded1 = urldecode($parts['base_path'] . $parts['path'] . \Drupal::config('boost.settings')->get('boost_char') . $parts['query']);
   $decoded2 = urldecode($decoded1);
   while ($decoded1 != $decoded2) {
     $decoded1 = urldecode($decoded2);
@@ -588,8 +624,7 @@ function boost_parse_url($url = NULL, $b_path = NULL) {
   $decoded = $decoded2;
   unset($decoded2);
   unset($decoded1);
-
-  $parts['url_full'] = $parts['host'] . $parts['base_path'] . $parts['path'] . variable_get('boost_char', BOOST_CHAR) . $parts['query'];
+  $parts['url_full'] = $parts['host'] . $parts['base_path'] . $parts['path'] . \Drupal::config('boost.settings')->get('boost_char') . $parts['query'];
   $parts['url'] = $url;
   $parts['url_decoded'] = $decoded;
   return $parts;
@@ -661,20 +696,18 @@ function boost_is_cacheable($parts, $request_type = 'normal') {
   }
 
   // Match the user's cacheability settings against the path.
-  // See http://api.drupal.org/api/function/block_block_list_alter/7
-  $visibility = variable_get('boost_cacheability_option', BOOST_VISIBILITY_NOTLISTED);
-  $pages_setting = variable_get('boost_cacheability_pages', BOOST_CACHEABILITY_PAGES);
-  if ($pages_setting) {
-    // Convert path string to lowercase. This allows comparison of the same path
-    // with different case. Ex: /Page, /page, /PAGE.
-    $pages = drupal_strtolower($pages_setting);
+  $visibility = \Drupal::config('boost.settings')->get('boost_cacheability_option');
+  $pages_setting = \Drupal::config('boost.settings')->get('boost_cacheability_pages');
+  $pages_setting = $pages_setting ? $pages_setting : '';
+  //if ($pages_setting) {
+    $pages = \Drupal\Component\Utility\Unicode::strtolower($pages_setting);
     if ($visibility < BOOST_VISIBILITY_PHP) {
       // Convert the alias to lowercase.
-      $path = drupal_strtolower($alias);
+      $path = \Drupal\Component\Utility\Unicode::strtolower($alias);
       // Compare the lowercase internal and lowercase path alias (if any).
-      $page_match = drupal_match_path($path, $pages);
+      $page_match = \Drupal::service('path.matcher')->matchPath($path, $pages);
       if ($path != $normal_path) {
-        $page_match = $page_match || drupal_match_path($normal_path, $pages);
+        $page_match = $page_match || \Drupal::service('path.matcher')->matchPath($normal_path, $pages);
       }
       // When 'boost_cacheability_option' has a value of 0 (BOOST_VISIBILITY_NOTLISTED),
       // Boost will cache all pages except those listed in 'boost_cacheability_pages'.
@@ -682,16 +715,16 @@ function boost_is_cacheable($parts, $request_type = 'normal') {
       // pages listed in 'boost_cacheability_pages'.
       $page_match = !($visibility xor $page_match);
     }
-    elseif (module_exists('php')) {
+    elseif (\Drupal::moduleHandler()->moduleExists('php')) {
       $page_match = php_eval($pages_setting);
     }
     else {
       $page_match = FALSE;
     }
-  }
+  /*}
   else {
     $page_match = TRUE;
-  }
+  }*/
 
   $parts['is_cacheable'] = $page_match;
 
@@ -706,7 +739,7 @@ function boost_is_cacheable($parts, $request_type = 'normal') {
   // Invoke hook_boost_is_cacheable($path).
   $modules = boost_module_implements('boost_is_cacheable', 'boost');
   foreach ($modules as $module) {
-    $result = module_invoke($module, 'boost_is_cacheable', $parts, $request_type);
+    $result = \Drupal::moduleHandler()->invoke($module, 'boost_is_cacheable', [$parts, $request_type]);
     if ($result['is_cacheable'] === FALSE) {
       if (! isset($result['is_cacheable'])) {
         $result['is_cacheable_reason'] = 'Page excluded from cache by a third-party module.';
@@ -734,8 +767,9 @@ function boost_is_cacheable($parts, $request_type = 'normal') {
  * @return $parts
  */
 function boost_boost_is_cacheable($parts, $request_type = 'normal') {
-  global $user;
-  if ($user->uid != 0 && $request_type != 'status') {
+  global $_boost;
+  $user = \Drupal::currentUser();
+  if (!isset($_boost['debug']) && $user->id() != 0 && $request_type != 'status') {
     $parts['is_cacheable'] = FALSE;
     $parts['is_cacheable_reason'] = 'Boost only works for anonymous users.';
   }
@@ -769,7 +803,7 @@ function boost_set_cookie($uid, $expires = NULL) {
  * Logic for the setting and removal of the boost cookie.
  */
 function boost_cookie_handler() {
-  global $user;
+  $user = \Drupal::currentUser();
 
   // Check if Drupal is started from index.php - could cause problems with other
   // contrib modules like ad module.
@@ -777,7 +811,7 @@ function boost_cookie_handler() {
     return;
   }
 
-  $uid = isset($user->uid) ? $user->uid : 0;
+  $uid = $user->id();
   // Remove Boost cookie at logout if it still exists.
   if (isset($_COOKIE[BOOST_COOKIE]) && $uid == 0) {
     boost_set_cookie($uid, REQUEST_TIME - 86400);
@@ -819,7 +853,17 @@ function _boost_get_menu_router($parts) {
   $router_item['page_type'] = '';
   $router_item['page_id'] = '';
   // Load the menu item.
-  $item = menu_get_item($parts['normal_path']);
+  try {
+    $itemUrl =  Url::fromUri('internal:/' . $parts['normal_path']);
+    $item = array(
+      'access' => $itemUrl->access(),
+    );
+  }
+  catch (Exception $e) {
+    // @TODO: Oliver: Check permission
+    $item['access'] = 1;
+  }
+
   if (is_array($item)) {
     $router_item += $item;
     if ($router_item['access']) {
@@ -835,7 +879,7 @@ function _boost_get_menu_router($parts) {
 
   // Get any extra arguments.
   if (!empty($router_item['path'])) {
-    $menu_args = arg(NULL, $router_item['path']);
+    $menu_args = explode('/', $router_item['path']);
     $diff = array();
     foreach ($parts['args'] as $key => $value) {
       if (!empty($value)) {
@@ -860,14 +904,14 @@ function _boost_get_menu_router($parts) {
   // Make sure function for menu callback is loaded.
   // See menu_execute_active_handler()
   if (!empty($router_item['include_file'])) {
-    require_once DRUPAL_ROOT . '/' . $router_item['include_file'];
+    require_once \Drupal::root() . '/' . $router_item['include_file'];
   }
 
   $parts['menu_item'] = $router_item;
   // Invoke hook_boost_menu_router($router_item).
   $modules = boost_module_implements('boost_menu_router', 'boost');
   foreach ($modules as $module) {
-    if (($result = module_invoke($module, 'boost_menu_router', $parts)) !== NULL) {
+    if (($result = \Drupal::moduleHandler()->invoke($module, 'boost_menu_router', [$parts])) !== NULL) {
       break;
     }
   }
@@ -892,7 +936,7 @@ function _boost_get_menu_router($parts) {
 function boost_boost_menu_router($parts) {
   // Handle nodes.
   if ($parts['args'][0] == 'node' && is_numeric($parts['args'][1])) {
-    $node = node_load($parts['args'][1]);
+    $node = \Drupal::entityManager()->getStorage('node')->load($parts['args'][1]);
     $parts['menu_item']['page_callback'] = 'node';
     $parts['menu_item']['page_id'] = $parts['args'][1];
     if ($node) {
@@ -903,7 +947,7 @@ function boost_boost_menu_router($parts) {
 
   // Handle taxonomy.
   if ($parts['args'][0] == 'taxonomy' && is_numeric($parts['args'][2])) {
-    $term = taxonomy_term_load($parts['args'][2]);
+    $term = \Drupal::entityManager()->getStorage("taxonomy_term")->load($parts['args'][2]);
     $parts['menu_item']['page_callback'] = 'taxonomy';
     $parts['menu_item']['page_id'] = $parts['args'][2];
     if ($term) {
@@ -915,7 +959,7 @@ function boost_boost_menu_router($parts) {
 
   // Handle users.
   if ($parts['args'][0] == 'user' && is_numeric($parts['args'][1])) {
-    $user = user_load($parts['args'][1]);
+    $user = \Drupal::entityManager()->getStorage('user')->load($parts['args'][1]);
     $parts['menu_item']['page_callback'] = 'user';
     $parts['menu_item']['page_id'] = $parts['args'][1];
     if ($user !== FALSE) {
@@ -1005,7 +1049,7 @@ function boost_boost_menu_router($parts) {
  * @return array
  */
 function boost_module_implements($hook, $name) {
-  $modules = module_implements($hook);
+  $modules = \Drupal::moduleHandler()->getImplementations($hook);
   // Make $names built in hook the last one.
   $pos = array_search($name, $modules);
   if ($pos !== FALSE) {
@@ -1025,7 +1069,8 @@ function boost_module_implements($hook, $name) {
  *   Contains info about the page that is about to be sent.
  */
 function boost_get_header_info() {
-  $headers = drupal_get_http_header();
+  $response = new \Symfony\Component\HttpFoundation\Response();
+  $headers = $response->headers->all();
   $status = '200 OK';
   $status_number = '200';
   $content_type = 'text/html; charset=utf-8';
@@ -1033,6 +1078,7 @@ function boost_get_header_info() {
   $charset = 'utf-8';
 
   foreach ($headers as $name_lower => $value) {
+    $value = is_array($value) ? implode(' ', $value) : $value;
     if ($name_lower == 'status') {
       $status = $value;
     }
@@ -1071,15 +1117,13 @@ function boost_get_header_info() {
  */
 function boost_match_header_attributes($header_info) {
   $type = $header_info['content-type-basic'];
-  $enabled = variable_get('boost_enabled_' . $type, -1);
-  if ($enabled === -1) {
-    boost_get_storage_types();
-    $enabled = variable_get('boost_enabled_' . $type, -1);
-    if ($enabled === -1) {
-      variable_set('boost_enabled_' . $type, FALSE);
-      $enabled = FALSE;
-    }
+  $def = boost_boost_storage_types();
+  $mydef = $def[$type];
+  $enabled = \Drupal::config('boost.settings')->get('boost_enabled_' . $type);
+  if (is_null($enabled)) {
+    $enabled = isset($mydef['enabled']) ? $mydef['enabled'] : 0;
   }
+
   if (!$enabled) {
     return array('enabled' => FALSE);
   }
@@ -1095,7 +1139,11 @@ function boost_match_header_attributes($header_info) {
   );
   $info = array();
   foreach ($keys as $key) {
-    $info[$key] = variable_get('boost_' . $key . '_' . $type, -1);
+    $info[$key] = \Drupal::config('boost.settings')->get('boost_' . $key . '_' . $type);
+    if (is_null($info[$key])) {
+      $info[$key] = isset($mydef[$key]) ? $mydef[$key] : -1;
+    }
+
     if ($info[$key] === -1) {
       return array('enabled' => FALSE);
     }
@@ -1121,7 +1169,7 @@ function boost_get_storage_types() {
   $modules = array_reverse($modules);
   foreach ($modules as $module) {
     // Invoke hook_boost_storage_types()
-    if (($result = module_invoke($module, 'boost_storage_types')) !== NULL) {
+    if (($result = \Drupal::moduleHandler()->invoke($module, 'boost_storage_types')) !== NULL) {
       foreach ($result as $key => $values) {
         if (!empty($values['variants'])) {
           foreach ($values['variants'] as $type) {
@@ -1160,11 +1208,21 @@ function boost_get_storage_types() {
   foreach ($types as $title => $content_types) {
     foreach ($content_types as $type => $values) {
       foreach ($keys as $key) {
-        $types[$title][$type][$key] = variable_get('boost_' . $key . '_' . $type, $values[$key]);
-        // Set variable in DB if it has never been set before
-        if (variable_get('boost_' . $key . '_' . $type, -1) === -1) {
-          variable_set('boost_' . $key . '_' . $type, $values[$key]);
+        $types[$title][$type][$key] = \Drupal::config('boost.settings')->get('boost_' . $key . '_' . $type);
+        if (is_null($types[$title][$type][$key])) {
+          $types[$title][$type][$key] = isset($values[$key]) ? $values[$key] : -1;
         }
+
+        // Set variable in DB if it has never been set before
+        // @TODO: Oliver
+        // @FIXME
+// // @FIXME
+// // The correct configuration object could not be determined. You'll need to
+// // rewrite this call manually.
+// if (variable_get('boost_' . $key . '_' . $type, -1) === -1) {
+//           variable_set('boost_' . $key . '_' . $type, $values[$key]);
+//         }
+
       }
     }
   }
@@ -1363,9 +1421,9 @@ function boost_write_file($filename, $data) {
 
   // Save data to a temp file.
   // file_unmanaged_save_data does not use rename.
-  $tempname = drupal_tempnam($directory, 'boost');
+  $tempname = \Drupal::service("file_system")->tempnam($directory, 'boost');
   if (file_put_contents($tempname, $data) === FALSE) {
-    watchdog('boost', 'Could not create the file %file on your system', array('%file' => $tempname), WATCHDOG_ERROR);
+    \Drupal::logger('boost')->error('Could not create the file %file on your system', array('%file' => $tempname));
     @unlink($tempname);
     return FALSE;
   }
@@ -1375,7 +1433,7 @@ function boost_write_file($filename, $data) {
     $oldname = $tempname . 'old';
     if (@rename($filename, $oldname) !== FALSE) {
       if (@rename($tempname, $filename) === FALSE) {
-        watchdog('boost', 'Could not rename the file %file on your system', array('%file' => $filename), WATCHDOG_ERROR);
+        \Drupal::logger('boost')->error('Could not rename the file %file on your system', array('%file' => $filename));
         @unlink($tempname);
         @rename($oldname, $filename);
         return FALSE;
@@ -1387,7 +1445,7 @@ function boost_write_file($filename, $data) {
   }
 
   // chmod file so webserver can send it out.
-  drupal_chmod($filename);
+  \Drupal::service("file_system")->chmod($filename);
   return TRUE;
 }
 
@@ -1407,12 +1465,13 @@ function boost_mkdir($directory) {
     }
 
     // Try to create the directory.
-    $mode = variable_get('file_chmod_directory', 0775);
+    $mode = 0775;
+
     if (!mkdir($directory, $mode, TRUE)) {
-      watchdog('boost', 'Could not create the directory %dir on your system', array('%dir' => $directory), WATCHDOG_ERROR);
+      \Drupal::logger('boost')->error('Could not create the directory %dir on your system', array('%dir' => $directory));
       return FALSE;
     }
-    drupal_chmod($directory);
+    \Drupal::service("file_system")->chmod($directory);
   }
   return TRUE;
 }
@@ -1428,7 +1487,7 @@ function boost_in_cache_dir($file) {
 
   $good = TRUE;
   $real_file = realpath($file);
-  $cache_dir = variable_get('boost_root_cache_dir', BOOST_ROOT_CACHE_DIR);
+  $cache_dir = \Drupal::config('boost.settings')->get('boost_root_cache_dir');
   $real_cache_dir = realpath($cache_dir);
 
   // Only operate in the cache dir.
@@ -1441,14 +1500,13 @@ function boost_in_cache_dir($file) {
 
   // Send error to watchdog.
   if (!$good) {
-    watchdog('boost', 'An operation outside of the cache directory was attempted on your system. %file or %real_file is outside the cache directory %cache or %real_cache. Debug info below <br> !debug', array(
+    \Drupal::logger('boost')->critical('An operation outside of the cache directory was attempted on your system. %file or %real_file is outside the cache directory %cache or %real_cache. Debug info below <br> !debug', array(
       '%file'       => $file,
       '%real_file'  => $real_file,
       '%cache'      => $cache_dir,
       '%real_cache' => $real_cache_dir,
       '!debug'      => boost_print_r($_boost),
-      ),
-    WATCHDOG_CRITICAL);
+      ));
   }
 
   return $good;
@@ -1494,8 +1552,8 @@ function boost_deliver_html_page($page_callback_result) {
   drupal_deliver_html_page($page_callback_result);
 
   // Last possible place to send a watchdog message without a shutdown function.
-  if (variable_get('boost_message_debug', BOOST_MESSAGE_DEBUG) && $_boost['args'][0] != 'admin') {
-    watchdog('boost', boost_print_r($_boost), array(), WATCHDOG_DEBUG);
+  if (\Drupal::config('boost.settings')->get('boost_message_debug') && $_boost['args'][0] != 'admin') {
+    \Drupal::logger('boost')->debug(boost_print_r($_boost), array());
   }
 }
 
@@ -1512,7 +1570,7 @@ function boost_form_submit_handler() {
 function boost_htaccess_cache_dir_put() {
   global $_boost, $base_path, $base_root;
   if (empty($_boost['base_dir'])) {
-    $url = $base_root . request_uri();
+    $url = $base_root . \Drupal::request()->getRequestUri();
     $parts = parse_url($url);
     $_boost['base_dir'] = boost_get_normal_cache_dir() . '/' . $parts['host'] . $base_path;
   }
@@ -1523,8 +1581,8 @@ function boost_htaccess_cache_dir_put() {
  * Generate htaccess rules for the cache directory.
  */
 function boost_htaccess_cache_dir_generate() {
-  $char_type = variable_get('boost_charset_type', BOOST_CHARSET_TYPE);
-  $etag = variable_get('boost_apache_etag', BOOST_APACHE_ETAG);
+  $char_type = \Drupal::config('boost.settings')->get('boost_charset_type');
+  $etag = \Drupal::config('boost.settings')->get('boost_apache_etag');
 
   // Go through every storage type getting data needed to build htaccess file.
   $gzip = FALSE;
@@ -1556,7 +1614,7 @@ function boost_htaccess_cache_dir_generate() {
 
   // Add in default charset
   $string = '';
-  if (variable_get('boost_add_default_charset', BOOST_ADD_DEFAULT_CHARSET)) {
+  if (\Drupal::config('boost.settings')->get('boost_add_default_charset')) {
     $string .= "AddDefaultCharset " . $char_type . "\n";
   }
 
@@ -1585,7 +1643,7 @@ function boost_htaccess_cache_dir_generate() {
   $string .= "    Header unset Last-Modified\n";
   $string .= "    Header append Vary Accept-Encoding\n";
   $string .= "    Header set Cache-Control \"no-store, no-cache, must-revalidate, post-check=0, pre-check=0\"\n";
-  if (variable_get('boost_apache_xheader', BOOST_APACHE_XHEADER) > 0) {
+  if (\Drupal::config('boost.settings')->get('boost_apache_xheader') > 0) {
     $string .= "    Header set X-Cached-By \"Boost\"\n";
   }
   $string .= "  </IfModule>\n";
@@ -1612,7 +1670,7 @@ function boost_htaccess_cache_dir_generate() {
   $string .= "\n";
   $string .= "SetHandler Drupal_Security_Do_Not_Remove_See_SA_2006_006\n";
   $string .= "Options None\n";
-  $string .= "Options +" . ( variable_get('boost_match_symlinks_options', BOOST_MATCH_SYMLINKS_OPTIONS) ? "FollowSymLinks" : "SymLinksIfOwnerMatch" ) . "\n";
+  $string .= "Options +" . ( \Drupal::config('boost.settings')->get('boost_match_symlinks_options') ? "FollowSymLinks" : "SymLinksIfOwnerMatch" ) . "\n";
   $string .= "\n";
 
   return $string;
@@ -1623,11 +1681,11 @@ function boost_htaccess_cache_dir_generate() {
  */
 function boost_log($message, $variables, $severity = WATCHDOG_NOTICE) {
   // Log debug info only if boost debugging is enabled
-  if ($severity == WATCHDOG_DEBUG && ! variable_get('boost_message_debug', BOOST_MESSAGE_DEBUG)) {
+  if ($severity == WATCHDOG_DEBUG && ! \Drupal::config('boost.settings')->get('boost_message_debug')) {
     return;
   }
 
-  watchdog('boost', $message, $variables, $severity);
+  \Drupal::logger('boost')->notice($message, []);
 }
 
 

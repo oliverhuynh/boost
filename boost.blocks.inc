@@ -7,7 +7,7 @@
  * see @boost_block_view()
  */
 function boost_block_view_status() {
-  global $user;
+  $user = \Drupal::currentUser();
 
   $block = array();
   $block['subject'] = '';
@@ -58,11 +58,11 @@ function boost_block_view_status() {
     ),
   );
 
-  if (file_exists($filename) && user_access('boost flush pages')) {
+  if (file_exists($filename) && \Drupal::currentUser()->hasPermission('boost flush pages')) {
     // 1922532 - Variable required to remove warning under PHP 5.4
-    $form = drupal_get_form('boost_block_flush_form');
+    $form = \Drupal::formBuilder()->getForm('boost_block_flush_form');
     $block['content']['flush'] = array(
-      '#markup' => drupal_render($form),
+      '#markup' => \Drupal::service("renderer")->render($form),
     );
   }
 

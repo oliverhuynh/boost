@@ -32,15 +32,22 @@ function boost_admin_htaccess_settings() {
 
   // Apache .htaccess settings generation
 //   $htaccess = boost_admin_generate_htaccess();
-  $form['htaccess'] = array(
-    '#type'          => 'fieldset',
-    '#title'         => t('Boost Apache .htaccess settings generation'),
-    '#description'   => t('<a href="!link">Explanation of .htaccess variables</a> <br /><br />  <em>Be sure to save the configuration and then go to the <a href="!rules">htaccess rules generation page</a> and copy the rules.</em> <br /><strong>Apache 2.4 users should uncomment the two marked sections, each line beginning with #</strong> ', array('!link' => url('http://www.askapache.com/htaccess/mod_rewrite-variables-cheatsheet.html'), '!rules' => url('admin/config/system/boost/htaccess/generator'))),
-  );
-  $form['htaccess']['boost_server_name_http_host'] = array(
+  // @FIXME
+// url() expects a route name or an external URI.
+// $form['htaccess'] = array(
+//     '#type'          => 'fieldset',
+//     '#title'         => t('Boost Apache .htaccess settings generation'),
+//     '#description'   => t('<a href="!link">Explanation of .htaccess variables</a> <br /><br />  <em>Be sure to save the configuration and then go to the <a href="!rules">htaccess rules generation page</a> and copy the rules.</em> <br /><strong>Apache 2.4 users should uncomment the two marked sections, each line beginning with #</strong> ', array('!link' => \Drupal\Core\Url::fromUri('http://www.askapache.com/htaccess/mod_rewrite-variables-cheatsheet.html'), '!rules' => url('admin/config/system/boost/htaccess/generator'))),
+//   );
+
+  // @FIXME
+// Could not extract the default value because it is either indeterminate, or
+// not scalar. You'll need to provide a default value in
+// config/install/boost.settings.yml and config/schema/boost.schema.yml.
+$form['htaccess']['boost_server_name_http_host'] = array(
     '#type'          => 'radios',
     '#title'         => t("Server's URL or Name"),
-    '#default_value' => variable_get('boost_server_name_http_host', BOOST_SERVER_NAME_HTTP_HOST),
+    '#default_value' => \Drupal::config('boost.settings')->get('boost_server_name_http_host'),
     '#options'       => array(
       '%{HTTP_HOST}' => '%{HTTP_HOST}',
       '%{SERVER_NAME}' => '%{SERVER_NAME}',
@@ -71,62 +78,102 @@ function boost_admin_htaccess_settings() {
   }
   elseif (!isset($best)) {
     $best = $document_root;
-    $description_extra = t('Please <a href="!link">open an boost issue on Drupal.org</a>, since apache and php might not be configured correctly.', array('!link' => url('http://drupal.org/node/add/project-issue/boost')));
+    $description_extra = t('Please <a href="!link">open an boost issue on Drupal.org</a>, since apache and php might not be configured correctly.', array('!link' => \Drupal\Core\Url::fromUri('http://drupal.org/node/add/project-issue/boost')));
   }
   $percent = 0;
   $int = similar_text(substr(trim($_SERVER['DOCUMENT_ROOT']), 18, 1), substr(trim($document_root), 18, 1), $percent);
   $description = t('Value of %best is recommended for this server.', array('%best' => $best)) . ' ' . $description_extra;
-  $form['htaccess']['boost_document_root'] = array(
+  // @FIXME
+// Could not extract the default value because it is either indeterminate, or
+// not scalar. You'll need to provide a default value in
+// config/install/boost.settings.yml and config/schema/boost.schema.yml.
+$form['htaccess']['boost_document_root'] = array(
     '#type'          => 'radios',
     '#title'         => t('Document Root'),
-    '#default_value' => variable_get('boost_document_root', BOOST_DOCUMENT_ROOT),
+    '#default_value' => \Drupal::config('boost.settings')->get('boost_document_root'),
     '#options'       => $options,
     '#description'   => $description,
   );
-  $form['htaccess']['boost_apache_etag'] = array(
+  // @FIXME
+// Could not extract the default value because it is either indeterminate, or
+// not scalar. You'll need to provide a default value in
+// config/install/boost.settings.yml and config/schema/boost.schema.yml.
+$form['htaccess']['boost_apache_etag'] = array(
     '#type'          => 'radios',
     '#title'         => t('ETag Settings'),
-    '#default_value' => variable_get('boost_apache_etag', BOOST_APACHE_ETAG),
+    '#default_value' => \Drupal::config('boost.settings')->get('boost_apache_etag'),
     '#options'       => array(
       3 => "Set FileETag 'MTime Size' - Useful in server clusters (Highly Recommended)",
       2 => "Set FileETag 'All' - Default if enabled",
       1 => "Set FileETag 'None' - Do not send an etag",
       0 => 'Do Nothing',
     ),
-    '#description'   => t('Uses <a href="!link">FileETag Directive</a> to set <a href="!about">ETags</a> for the files cached by Boost. <a href="!stack">More info on this subject</a>', array('!link' => url('http://httpd.apache.org/docs/trunk/mod/core.html#fileetag'), '!about' => url('http://en.wikipedia.org/wiki/HTTP_ETag'), '!stack' => url('http://stackoverflow.com/questions/tagged?tagnames=etag&sort=votes&pagesize=50'))),
+    '#description'   => t('Uses <a href="!link">FileETag Directive</a> to set <a href="!about">ETags</a> for the files cached by Boost. <a href="!stack">More info on this subject</a>', array('!link' => \Drupal\Core\Url::fromUri('http://httpd.apache.org/docs/trunk/mod/core.html#fileetag'), '!about' => \Drupal\Core\Url::fromUri('http://en.wikipedia.org/wiki/HTTP_ETag'), '!stack' => \Drupal\Core\Url::fromUri('http://stackoverflow.com/questions/tagged?tagnames=etag&sort=votes&pagesize=50'))),
   );
-  $form['htaccess']['boost_apache_xheader'] = array(
+  // @FIXME
+// Could not extract the default value because it is either indeterminate, or
+// not scalar. You'll need to provide a default value in
+// config/install/boost.settings.yml and config/schema/boost.schema.yml.
+$form['htaccess']['boost_apache_xheader'] = array(
     '#type'          => 'radios',
     '#title'         => t('Boost Tags'),
-    '#default_value' => variable_get('boost_apache_xheader', BOOST_APACHE_XHEADER),
+    '#default_value' => \Drupal::config('boost.settings')->get('boost_apache_xheader'),
     '#options'       => array(
       1 => 'Set Boost header',
       0 => 'Do not set Boost header',
     ),
     '#description'   => t('In order to identify that the page is being served from the cache, Boost can send out a header that will identify any files served from the boost cache.'),
   );
-  $form['htaccess']['boost_ssl_bypass'] = array(
+  // @FIXME
+// Could not extract the default value because it is either indeterminate, or
+// not scalar. You'll need to provide a default value in
+// config/install/boost.settings.yml and config/schema/boost.schema.yml.
+$form['htaccess']['boost_ssl_bypass'] = array(
     '#type'          => 'checkbox',
     '#title'         => t('Bypass the boost cache for ssl requests.'),
-    '#default_value' => variable_get('boost_ssl_bypass', BOOST_SSL_BYPASS),
+    '#default_value' => \Drupal::config('boost.settings')->get('boost_ssl_bypass'),
     '#description'   => t('Ticking this is recommended if you use the securepages module.'),
   );
-  $form['htaccess']['boost_add_default_charset'] = array(
+  // @FIXME
+// Could not extract the default value because it is either indeterminate, or
+// not scalar. You'll need to provide a default value in
+// config/install/boost.settings.yml and config/schema/boost.schema.yml.
+$form['htaccess']['boost_add_default_charset'] = array(
     '#type'          => 'checkbox',
     '#title'         => t('Add "AddDefaultCharset X" to the htaccess rules'),
-    '#default_value' => variable_get('boost_add_default_charset', BOOST_ADD_DEFAULT_CHARSET),
+    '#default_value' => \Drupal::config('boost.settings')->get('boost_add_default_charset'),
     '#description'   => t('Depending on your i18n settings you might want this disabled or enabled. X is set below'),
   );
-  $form['htaccess']['boost_charset_type'] = array(
+  // @FIXME
+// Could not extract the default value because it is either indeterminate, or
+// not scalar. You'll need to provide a default value in
+// config/install/boost.settings.yml and config/schema/boost.schema.yml.
+$form['htaccess']['boost_charset_type'] = array(
     '#type'          => 'textfield',
     '#title'         => t('Add "AddDefaultCharset utf-8" to the htaccess rules'),
-    '#default_value' => variable_get('boost_charset_type', BOOST_CHARSET_TYPE),
+    '#default_value' => \Drupal::config('boost.settings')->get('boost_charset_type'),
     '#description'   => t('Depending on your i18n settings you might want this disabled or enabled.'),
   );
-  $form['htaccess']['boost_match_symlinks_options'] = array(
+  // @FIXME
+// Could not extract the default value because it is either indeterminate, or
+// not scalar. You'll need to provide a default value in
+// config/install/boost.settings.yml and config/schema/boost.schema.yml.
+// @FIXME
+// Could not extract the default value because it is either indeterminate, or
+// not scalar. You'll need to provide a default value in
+// config/install/boost.settings.yml and config/schema/boost.schema.yml.
+// @FIXME
+// Could not extract the default value because it is either indeterminate, or
+// not scalar. You'll need to provide a default value in
+// config/install/boost.settings.yml and config/schema/boost.schema.yml.
+// @FIXME
+// Could not extract the default value because it is either indeterminate, or
+// not scalar. You'll need to provide a default value in
+// config/install/boost.settings.yml and config/schema/boost.schema.yml.
+$form['htaccess']['boost_match_symlinks_options'] = array(
     '#type'          => 'radios',
-    '#title'         => t('%cache_folder Options', array( '%cache_folder' => $document_root . '/' . variable_get('boost_root_cache_dir', BOOST_ROOT_CACHE_DIR) . '/' . variable_get('boost_normal_dir', BOOST_NORMAL_DIR) . '/' . variable_get('boost_server_name_http_host', BOOST_SERVER_NAME_HTTP_HOST) . '/.htaccess' )),
-    '#default_value' => variable_get('boost_match_symlinks_options', BOOST_MATCH_SYMLINKS_OPTIONS),
+    '#title'         => t('%cache_folder Options', array( '%cache_folder' => $document_root . '/' . \Drupal::config('boost.settings')->get('boost_root_cache_dir') . '/' . \Drupal::config('boost.settings')->get('boost_normal_dir') . '/' . \Drupal::config('boost.settings')->get('boost_server_name_http_host') . '/.htaccess' )),
+    '#default_value' => \Drupal::config('boost.settings')->get('boost_match_symlinks_options'),
     '#options'       => array(
       1 => 'Set "Options +FollowSymLinks"',
       0 => 'Set "Options +SymLinksIfOwnerMatch"',
@@ -148,17 +195,20 @@ function boost_admin_htaccess_settings() {
 function boost_admin_htaccess_generation() {
   // Generated .htaccess output
   $htaccess = boost_admin_htaccess_generate_htaccess();
-  $form['boost_generated'] = array(
-    '#type'          => 'textarea',
-    '#title'         => t('Generated Rules'),
-    '#default_value' => $htaccess,
-    '#rows'          => count(explode("\n", $htaccess))+1,
-    '#wysiwyg'       => FALSE,
-    '#description'   => t("Copy this into your .htaccess file below <pre><tt>  # If your site is running in a VirtualDocumentRoot at http://example.com/,
-  # uncomment the following line:
-  # RewriteBase / </tt></pre> and above <pre><tt>  # Pass all requests not referring directly to files in the filesystem to
-  # index.php. Clean URLs are handled in drupal_environment_initialize().</tt></pre><br />Note that the generated rules' settings can be configure at !link.", array('!link' => l('admin/config/development/performance/boost/htaccess-settings', 'admin/config/development/performance/boost/htaccess-settings'))),
-  );
+  // @FIXME
+// l() expects a Url object, created from a route name or external URI.
+// $form['boost_generated'] = array(
+//     '#type'          => 'textarea',
+//     '#title'         => t('Generated Rules'),
+//     '#default_value' => $htaccess,
+//     '#rows'          => count(explode("\n", $htaccess))+1,
+//     '#wysiwyg'       => FALSE,
+//     '#description'   => t("Copy this into your .htaccess file below <pre><tt>  # If your site is running in a VirtualDocumentRoot at http://example.com/,
+//   # uncomment the following line:
+//   # RewriteBase / </tt></pre> and above <pre><tt>  # Pass all requests not referring directly to files in the filesystem to
+//   # index.php. Clean URLs are handled in drupal_environment_initialize().</tt></pre><br />Note that the generated rules' settings can be configure at !link.", array('!link' => l('admin/config/development/performance/boost/htaccess-settings', 'admin/config/development/performance/boost/htaccess-settings'))),
+//   );
+
 
   // reset htaccess on submit;
   $form['#submit'][] = 'boost_form_submit_handler';
@@ -175,14 +225,34 @@ function boost_admin_htaccess_generation() {
  */
 function boost_admin_htaccess_generate_htaccess() {
   global $base_path;
-  $server_name = variable_get('boost_server_name_http_host', BOOST_SERVER_NAME_HTTP_HOST);
-  $document_root = variable_get('boost_document_root', BOOST_DOCUMENT_ROOT);
+  // @FIXME
+// Could not extract the default value because it is either indeterminate, or
+// not scalar. You'll need to provide a default value in
+// config/install/boost.settings.yml and config/schema/boost.schema.yml.
+$server_name = \Drupal::config('boost.settings')->get('boost_server_name_http_host');
+  // @FIXME
+// Could not extract the default value because it is either indeterminate, or
+// not scalar. You'll need to provide a default value in
+// config/install/boost.settings.yml and config/schema/boost.schema.yml.
+$document_root = \Drupal::config('boost.settings')->get('boost_document_root');
   $drupal_subdir = rtrim($base_path, '/');
 
   // Various dir's
-  $cache_dir = variable_get('boost_root_cache_dir', BOOST_ROOT_CACHE_DIR);
-  $normal_dir = variable_get('boost_normal_dir', BOOST_NORMAL_DIR);
-  $char = variable_get('boost_char', BOOST_CHAR);
+  // @FIXME
+// Could not extract the default value because it is either indeterminate, or
+// not scalar. You'll need to provide a default value in
+// config/install/boost.settings.yml and config/schema/boost.schema.yml.
+$cache_dir = \Drupal::config('boost.settings')->get('boost_root_cache_dir');
+  // @FIXME
+// Could not extract the default value because it is either indeterminate, or
+// not scalar. You'll need to provide a default value in
+// config/install/boost.settings.yml and config/schema/boost.schema.yml.
+$normal_dir = \Drupal::config('boost.settings')->get('boost_normal_dir');
+  // @FIXME
+// Could not extract the default value because it is either indeterminate, or
+// not scalar. You'll need to provide a default value in
+// config/install/boost.settings.yml and config/schema/boost.schema.yml.
+$char = \Drupal::config('boost.settings')->get('boost_char');
 
   // Go through every storage type getting the extesion and if it supports gzip.
   $enabled_file_extensions = array();
@@ -227,13 +297,25 @@ function boost_admin_htaccess_generate_htaccess() {
     $string .= "\n";
 
     $string .= "  # Caching for anonymous users\n";
-    $string .= "  # Skip boost IF not get request OR uri has wrong dir OR cookie is set OR request came from this server" . (variable_get('boost_ssl_bypass', BOOST_SSL_BYPASS) ? " OR https request" : "") . "\n";
+    // @FIXME
+// Could not extract the default value because it is either indeterminate, or
+// not scalar. You'll need to provide a default value in
+// config/install/boost.settings.yml and config/schema/boost.schema.yml.
+$string .= "  # Skip boost IF not get request OR uri has wrong dir OR cookie is set OR request came from this server" . (\Drupal::config('boost.settings')->get('boost_ssl_bypass') ? " OR https request" : "") . "\n";
     $string .= "  RewriteCond %{REQUEST_METHOD} !^(GET|HEAD)$ [OR]\n";
     $string .= "  RewriteCond %{REQUEST_URI} (^$base_path(admin|$cache_dir|misc|modules|sites|system|openid|themes|node/add|comment/reply))|(/(edit|user|user/(login|password|register))$) [OR]\n";
-    if (variable_get('boost_ssl_bypass', BOOST_SSL_BYPASS)) {
+    // @FIXME
+// Could not extract the default value because it is either indeterminate, or
+// not scalar. You'll need to provide a default value in
+// config/install/boost.settings.yml and config/schema/boost.schema.yml.
+if (\Drupal::config('boost.settings')->get('boost_ssl_bypass')) {
       $string .= "  RewriteCond %{HTTPS} on [OR]\n";
     }
-    $string .= "  RewriteCond %{HTTP_COOKIE} " . variable_get('boost_cookie', BOOST_COOKIE) . " [OR]\n";
+    // @FIXME
+// Could not extract the default value because it is either indeterminate, or
+// not scalar. You'll need to provide a default value in
+// config/install/boost.settings.yml and config/schema/boost.schema.yml.
+$string .= "  RewriteCond %{HTTP_COOKIE} " . \Drupal::config('boost.settings')->get('boost_cookie') . " [OR]\n";
     $string .= "  RewriteCond %{ENV:REDIRECT_STATUS} 200\n";
     $string .= "  RewriteRule .* - [S=$skip]\n";
     $string .= "\n";

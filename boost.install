@@ -7,6 +7,7 @@
 
 //////////////////////////////////////////////////////////////////////////////
 // Core API hooks
+use Drupal\Core\Url;
 
 /**
  * Implements hook_enable().
@@ -34,12 +35,7 @@ function boost_install() {
  * Implements hook_uninstall().
  */
 function boost_uninstall() {
-  // Clear variables
-  $name = 'boost_';
-  db_delete('variable')
-    ->condition('name', db_like($name) . '%', 'LIKE')
-    ->execute();
-  cache_clear_all('variables', 'cache_bootstrap');
+  \Drupal::cache('bootstrap')->deleteAll();
 }
 
 /**
@@ -47,17 +43,17 @@ function boost_uninstall() {
  */
 function boost_requirements($phase) {
   $requirements = array();
-  $t = get_t();
+  $t = 't';
   // Check the server's ability to use boost
   if ($phase == 'runtime') {
-    // Check if core cache is enabled
-    $core_cache = variable_get('cache', 0);
+    $core_cache = \Drupal::config('system.performance')->get('cache.page.enabled');
+
     if ($core_cache) {
       $requirements['boost_core_cache'] = array(
         'title' => $t('Boost'),
         'value' => $t('Core cache is enabled'),
         'severity' => REQUIREMENT_WARNING,
-        'description' => $t('Boost will not function properly while Drupal core cache is enabled. Disable Boost or <a href="@settings">the core cache</a>.', array('@settings' => url('admin/config/development/performance'))),
+        'description' => $t('Boost will not function properly while Drupal core cache is enabled. Disable Boost or <a href="@settings">the core cache</a>.', array('@settings' => \Drupal\Core\Url::fromRoute('system.performance_settings'))),
       );
     }
 
@@ -90,8 +86,9 @@ function boost_requirements($phase) {
       $requirements['boost'] = array(
         'title'       => $t('Boost'),
         'severity'    => REQUIREMENT_OK,
-        'value'       => $t('Boost installed correctly, should be working if properly <a href="@settings">configured</a>.', array('@settings' => url('admin/config/system/boost'))),
+        'value'       => $t('Boost installed correctly, should be working if properly <a href="@settings">configured</a>.', array('@settings' => Url::fromUri('internal:/admin/config/system/boost'))),
       );
+
     }
   }
   return $requirements;

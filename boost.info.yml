@@ -1,0 +1,7 @@
+name: Boost
+description: 'Caches generated output as a static file to be served directly from the webserver.'
+package: 'Performance and scalability'
+core: 8.x
+recommends:
+  - expire
+type: module

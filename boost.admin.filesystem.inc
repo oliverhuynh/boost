@@ -13,20 +13,32 @@
  */
 function boost_admin_filesystem_settings() {
 
-  $form['boost_root_cache_dir'] = array(
+  // @FIXME
+// Could not extract the default value because it is either indeterminate, or
+// not scalar. You'll need to provide a default value in
+// config/install/boost.settings.yml and config/schema/boost.schema.yml.
+$form['boost_root_cache_dir'] = array(
     '#type' => 'textfield',
     '#title' => t('Root cache directory'),
-    '#default_value' => variable_get('boost_root_cache_dir', BOOST_ROOT_CACHE_DIR),
+    '#default_value' => \Drupal::config('boost.settings')->get('boost_root_cache_dir'),
   );
-  $form['boost_normal_dir'] = array(
+  // @FIXME
+// Could not extract the default value because it is either indeterminate, or
+// not scalar. You'll need to provide a default value in
+// config/install/boost.settings.yml and config/schema/boost.schema.yml.
+$form['boost_normal_dir'] = array(
     '#type' => 'textfield',
     '#title' => t('Normal cache directory'),
-    '#default_value' => variable_get('boost_normal_dir', BOOST_NORMAL_DIR),
+    '#default_value' => \Drupal::config('boost.settings')->get('boost_normal_dir'),
   );
-  $form['boost_char'] = array(
+  // @FIXME
+// Could not extract the default value because it is either indeterminate, or
+// not scalar. You'll need to provide a default value in
+// config/install/boost.settings.yml and config/schema/boost.schema.yml.
+$form['boost_char'] = array(
     '#type' => 'textfield',
     '#title' => t('Character replacement for "?" in the URL'),
-    '#default_value' => variable_get('boost_char', BOOST_CHAR),
+    '#default_value' => \Drupal::config('boost.settings')->get('boost_char'),
   );
 
   // reset htaccess on submit;

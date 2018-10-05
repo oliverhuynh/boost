@@ -12,20 +12,28 @@
  * @see system_settings_form()
  */
 function boost_admin_settings() {
-  drupal_add_js(drupal_get_path('module', 'system') . '/system.js');
+  // @FIXME
+// The Assets API has totally changed. CSS, JavaScript, and libraries are now
+// attached directly to render arrays using the #attached property.
+// 
+// 
+// @see https://www.drupal.org/node/2169605
+// @see https://www.drupal.org/node/2408597
+// drupal_add_js(drupal_get_path('module', 'system') . '/system.js');
+
 
   $form['cacheability'] = array(
     '#type'          => 'fieldset',
     '#title'         => t('Boost cacheability settings'),
   );
   // See http://api.drupal.org/api/function/block_admin_configure/7
-  $access = user_access('use PHP for settings');
+  $access = \Drupal::currentUser()->hasPermission('use PHP for settings');
   $options = array(
     BOOST_VISIBILITY_NOTLISTED => t('All pages except those listed'),
     BOOST_VISIBILITY_LISTED => t('Only the listed pages'),
   );
   $description = t("Specify pages by using their paths. Enter one path per line. The '*' character is a wildcard. Example paths are %blog for the blog page and %blog-wildcard for every personal blog. %front is the front page.", array('%blog' => 'blog', '%blog-wildcard' => 'blog/*', '%front' => '<front>'));
-  if (module_exists('php') && $access) {
+  if (\Drupal::moduleHandler()->moduleExists('php') && $access) {
     $options += array(BOOST_VISIBILITY_PHP => t('Pages on which this PHP code returns <code>TRUE</code> (experts only)'));
     $title = t('Pages or PHP code');
     $description .= ' ' . t('If the PHP option is chosen, enter PHP code between %php. Note that executing incorrect PHP code can break your Drupal site.', array('%php' => '<?php ?>'));
@@ -33,22 +41,30 @@ function boost_admin_settings() {
   else {
     $title = t('Pages');
   }
-  $form['cacheability']['boost_cacheability_option'] = array(
+  // @FIXME
+// Could not extract the default value because it is either indeterminate, or
+// not scalar. You'll need to provide a default value in
+// config/install/boost.settings.yml and config/schema/boost.schema.yml.
+$form['cacheability']['boost_cacheability_option'] = array(
     '#type' => 'radios',
     '#title' => t('Cache specific pages'),
     '#options' => $options,
-    '#default_value' => variable_get('boost_cacheability_option', BOOST_VISIBILITY_NOTLISTED),
+    '#default_value' => \Drupal::config('boost.settings')->get('boost_cacheability_option'),
   );
-  $form['cacheability']['boost_cacheability_pages'] = array(
+  // @FIXME
+// Could not extract the default value because it is either indeterminate, or
+// not scalar. You'll need to provide a default value in
+// config/install/boost.settings.yml and config/schema/boost.schema.yml.
+$form['cacheability']['boost_cacheability_pages'] = array(
     '#type' => 'textarea',
     '#title' => '<span class="element-invisible">' . $title . '</span>',
-    '#default_value' => variable_get('boost_cacheability_pages', BOOST_CACHEABILITY_PAGES),
+    '#default_value' => \Drupal::config('boost.settings')->get('boost_cacheability_pages'),
     '#description' => $description,
   );
 
 
   $types = boost_get_storage_types();
-  $period = drupal_map_assoc(array(0, 60, 180, 300, 600, 900, 1800, 2700, 3600, 10800, 21600, 32400, 43200, 64800, 86400, 2*86400, 3*86400, 4*86400, 5*86400, 6*86400, 604800, 2*604800, 3*604800, 4*604800, 8*604800, 16*604800, 52*604800), 'format_interval');
+  $period = array_combine(array(0, 60, 180, 300, 600, 900, 1800, 2700, 3600, 10800, 21600, 32400, 43200, 64800, 86400, 2*86400, 3*86400, 4*86400, 5*86400, 6*86400, 604800, 2*604800, 3*604800, 4*604800, 8*604800, 16*604800, 52*604800), 'format_interval', array(0, 60, 180, 300, 600, 900, 1800, 2700, 3600, 10800, 21600, 32400, 43200, 64800, 86400, 2*86400, 3*86400, 4*86400, 5*86400, 6*86400, 604800, 2*604800, 3*604800, 4*604800, 8*604800, 16*604800, 52*604800));
 
   $form['cache_types'] = array(
     '#type'          => 'fieldset',

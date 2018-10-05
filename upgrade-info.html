@@ -1,0 +1,671 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <link href='http://fonts.googleapis.com/css?family=Open+Sans:600italic,400,700,600' rel='stylesheet' type='text/css' />
+    <style type="text/css">
+    <!--
+
+body {
+  width: 80%;
+  color: #343434;
+  margin: 1em auto;
+  font-family: 'Open Sans', Verdana, sans-serif;
+}
+
+details {
+  font-size: 18px;
+  line-height: 25px;
+  margin-bottom: 2em;
+  display: block;
+}
+
+details summary {
+  padding: 1em;
+  margin-bottom: 1em;
+  display: block;
+}
+
+details.error summary {
+  background-color: #ffd5d5;
+}
+
+details.warning summary {
+  background-color: #fff3bb;
+}
+
+a {
+  color: #095cb1;
+  font-weight: bold;
+  text-decoration: none;
+}
+
+h5 {
+  font-size: 1em;
+}
+
+aside {
+  font-style: italic;
+  line-height: 20px;
+  font-size: 15px;
+}
+
+.group {
+  border: 1px solid #ececec;
+  padding: 1em;
+  display: block;
+}
+
+.group > summary {
+  padding: 0;
+  color: #c8c8c8;
+  margin-bottom: 0;;
+  font-weight: bold;
+  letter-spacing: .1em;
+  text-transform: uppercase;
+  display: block;
+}
+
+.group[open] > summary {
+  margin-bottom: 1em;
+}
+
+.group > details:last-child {
+  margin-bottom: 0;
+}
+
+    -->
+    </style>
+  </head>
+  <body>
+      <details open="true" class="group">
+      <summary></summary>
+          <details class="warning">
+      <summary>Static permissions are now defined in <code>MODULE.permissions.yml</code>.</summary>
+
+      
+            <h5>Documentation</h5>
+      <ul>
+                <li><a target="_blank" href="https://www.drupal.org/node/2311427">Defining permissions in <code>MODULE.permissions.yml</code></a></li>
+              </ul>
+      
+            <h5>Files Affected</h5>
+      <ul>
+              <li>/data/www-dev/dp.dev.jufist.org/prod/public_html/main/modules/boost/boost.module, line 185</li>
+            </ul>
+            <p class="fixable">This issue can be fixed automatically.</p>      <aside>Flagged by hook_permission</aside>    </details>
+    <details class="error">
+      <summary>Blocks are now plugins in the <code>MODULE\Plugin\Block</code> namespace.</summary>
+
+      
+            <h5>Documentation</h5>
+      <ul>
+                <li><a target="_blank" href="https://www.drupal.org/node/1880620">Blocks are now plugins</a></li>
+                <li><a target="_blank" href="https://api.drupal.org/api/drupal/core%21modules%21block%21block.api.php/group/block_api/8">Drupal 8 Block API</a></li>
+              </ul>
+      
+            <h5>Files Affected</h5>
+      <ul>
+              <li>/data/www-dev/dp.dev.jufist.org/prod/public_html/main/modules/boost/boost.module, line 197</li>
+            </ul>
+                  <aside>Flagged by _flag_hook:block_info</aside>    </details>
+    <details class="error">
+      <summary>Blocks are now plugins in the <code>MODULE\Plugin\Block</code> namespace.</summary>
+
+      
+            <h5>Documentation</h5>
+      <ul>
+                <li><a target="_blank" href="https://www.drupal.org/node/1880620">Blocks are now plugins</a></li>
+                <li><a target="_blank" href="https://api.drupal.org/api/drupal/core%21modules%21block%21block.api.php/group/block_api/8">Drupal 8 Block API</a></li>
+              </ul>
+      
+            <h5>Files Affected</h5>
+      <ul>
+              <li>/data/www-dev/dp.dev.jufist.org/prod/public_html/main/modules/boost/boost.module, line 209</li>
+            </ul>
+                  <aside>Flagged by _flag_hook:block_view</aside>    </details>
+    <details class="error">
+      <summary><code>hook_drupal_goto_alter()</code> has been removed.</summary>
+
+      
+            <h5>Documentation</h5>
+      <ul>
+                <li><a target="_blank" href="https://www.drupal.org/node/2023537"><code>hook_drupal_goto_alter()</code> replaced by event subscriber</a></li>
+              </ul>
+      
+            <h5>Files Affected</h5>
+      <ul>
+              <li>/data/www-dev/dp.dev.jufist.org/prod/public_html/main/modules/boost/boost.module, line 274</li>
+            </ul>
+                  <aside>Flagged by _flag_hook:drupal_goto_alter</aside>    </details>
+    <details class="error">
+      <summary><code>hook_exit()</code> has been removed.</summary>
+
+      
+            <h5>Documentation</h5>
+      <ul>
+                <li><a target="_blank" href="https://www.drupal.org/node/1911186"><code>hook_exit()</code> replaced by event subscriber</a></li>
+              </ul>
+      
+            <h5>Files Affected</h5>
+      <ul>
+              <li>/data/www-dev/dp.dev.jufist.org/prod/public_html/main/modules/boost/boost.module, line 283</li>
+            </ul>
+                  <aside>Flagged by _flag_hook:exit</aside>    </details>
+    <details class="error">
+      <summary><code>hook_init()</code> has been removed.</summary>
+
+      
+            <h5>Documentation</h5>
+      <ul>
+                <li><a target="_blank" href="https://www.drupal.org/node/2013014"><code>hook_init()</code> removed</a></li>
+              </ul>
+      
+            <h5>Files Affected</h5>
+      <ul>
+              <li>/data/www-dev/dp.dev.jufist.org/prod/public_html/main/modules/boost/boost.module, line 224</li>
+            </ul>
+                  <aside>Flagged by _flag_hook:init</aside>    </details>
+    <details class="error">
+      <summary><code>hook_menu()</code> has been removed from Drupal 8.</summary>
+
+      
+            <h5>Documentation</h5>
+      <ul>
+                <li><a target="_blank" href="https://www.drupal.org/node/1800686">All functionality of <code>hook_menu()</code> replaced</a></li>
+                <li><a target="_blank" href="https://www.drupal.org/node/2177901">Dynamic routes are now defined in <code>MODULE.routing.yml</code></a></li>
+                <li><a target="_blank" href="https://www.drupal.org/node/2119699">Page callbacks have been converted to controller classes</a></li>
+                <li><a target="_blank" href="https://www.drupal.org/node/2089605">Route naming convention</a></li>
+                <li><a target="_blank" href="https://www.drupal.org/node/2165243">Contextual links are now plugins defined in <code>MODULE.links.contextual.yml</code></a></li>
+                <li><a target="_blank" href="https://www.drupal.org/node/2007444">Local actions are now plugins defined in <code>MODULE.links.action.yml</code></a></li>
+                <li><a target="_blank" href="https://www.drupal.org/node/2044515">Local tasks and now plugins defined in <code>MODULE.links.task.yml</code></a></li>
+                <li><a target="_blank" href="https://www.drupal.org/node/2228089">Menu links are now defined in <code>MODULE.links.menu.yml</code></a></li>
+              </ul>
+      
+            <h5>Files Affected</h5>
+      <ul>
+              <li>/data/www-dev/dp.dev.jufist.org/prod/public_html/main/modules/boost/boost.module, line 96</li>
+            </ul>
+                  <aside>Flagged by _flag_hook:menu</aside>    </details>
+    <details class="error">
+      <summary>Automated web tests must be in a PSR-4 namespace, and unit tests must be converted to PHPUnit.</summary>
+
+      
+            <h5>Documentation</h5>
+      <ul>
+                <li><a target="_blank" href="https://www.drupal.org/node/1543796">Namespacing of automated tests has changed</a></li>
+                <li><a target="_blank" href="https://www.drupal.org/node/2301125"><code>getInfo()</code> in test classes replaced by doc comments</a></li>
+                <li><a target="_blank" href="https://www.drupal.org/node/1710766">Test classes should define a <code>$modules</code> property declaring dependencies</a></li>
+                <li><a target="_blank" href="https://www.drupal.org/node/1911318">SimpleTest tests now use empty &quot;testing&quot; profile by default</a></li>
+                <li><a target="_blank" href="https://www.drupal.org/node/1829160">New <code>KernelTestBase</code> class for API-level integration tests</a></li>
+                <li><a target="_blank" href="https://www.drupal.org/node/2012184">PHPUnit added to Drupal core</a></li>
+              </ul>
+      
+                      </details>
+    <details class="error">
+      <summary><code>drupal_add_js()</code> has been removed.</summary>
+
+      
+            <h5>Documentation</h5>
+      <ul>
+                <li><a target="_blank" href="https://www.drupal.org/node/2169605"><code>drupal_add_css()</code>, <code>drupal_add_js()</code> and <code>drupal_add_library()</code> removed in favor of <code>#attached</code></a></li>
+                <li><a target="_blank" href="https://www.drupal.org/node/2408597"><code>AssetResolverInterface</code> and <code>AttachedAssetsInterface</code> replace internal Asset API functions</a></li>
+              </ul>
+      
+            <h5>Files Affected</h5>
+      <ul>
+              <li>/data/www-dev/dp.dev.jufist.org/prod/public_html/main/modules/boost/boost.admin.inc, line 15</li>
+            </ul>
+                  <aside>Flagged by _function_call:drupal_add_js</aside>    </details>
+    <details class="error">
+      <summary>The caching system has been rewritten.</summary>
+
+      
+            <h5>Documentation</h5>
+      <ul>
+                <li><a target="_blank" href="https://www.drupal.org/node/1884796">Drupal 8 Cache API</a></li>
+                <li><a target="_blank" href="https://www.drupal.org/node/1272696">New cache API</a></li>
+              </ul>
+      
+            <h5>Files Affected</h5>
+      <ul>
+              <li>/data/www-dev/dp.dev.jufist.org/prod/public_html/main/modules/boost/boost.install, line 42</li>
+            </ul>
+                  <aside>Flagged by _function_call:cache_clear_all</aside>    </details>
+    <details class="error">
+      <summary><code>drupal_map_assoc()</code> has been removed.</summary>
+
+      
+            <h5>Documentation</h5>
+      <ul>
+                <li><a target="_blank" href="https://www.drupal.org/node/2207453"><code>drupal_map_assoc()</code> removed</a></li>
+              </ul>
+      
+            <h5>Files Affected</h5>
+      <ul>
+              <li>/data/www-dev/dp.dev.jufist.org/prod/public_html/main/modules/boost/boost.admin.inc, line 51</li>
+            </ul>
+                  <aside>Flagged by _function_call:drupal_map_assoc</aside>    </details>
+    <details class="error">
+      <summary><code>drupal_render()</code> has been removed.</summary>
+
+      
+      
+            <h5>Files Affected</h5>
+      <ul>
+              <li>/data/www-dev/dp.dev.jufist.org/prod/public_html/main/modules/boost/boost.blocks.inc, line 65</li>
+            </ul>
+                  <aside>Flagged by _function_call:drupal_render</aside>    </details>
+    <details class="error">
+      <summary><code>node_load()</code> has been removed.</summary>
+
+      
+            <h5>Documentation</h5>
+      <ul>
+                <li><a target="_blank" href="https://www.drupal.org/node/2266845">Entities are now classed objects implementing <code>EntityInterface</code></a></li>
+              </ul>
+      
+            <h5>Files Affected</h5>
+      <ul>
+              <li>/data/www-dev/dp.dev.jufist.org/prod/public_html/main/modules/boost/boost.module, line 895</li>
+            </ul>
+                  <aside>Flagged by _function_call:node_load</aside>    </details>
+    <details class="error">
+      <summary><code>user_load()</code> has been removed.</summary>
+
+      
+            <h5>Documentation</h5>
+      <ul>
+                <li><a target="_blank" href="https://www.drupal.org/node/2266845">Entities are now classed objects implementing <code>EntityInterface</code></a></li>
+              </ul>
+      
+            <h5>Files Affected</h5>
+      <ul>
+              <li>/data/www-dev/dp.dev.jufist.org/prod/public_html/main/modules/boost/boost.module, line 918</li>
+            </ul>
+                  <aside>Flagged by _function_call:user_load</aside>    </details>
+    <details class="error">
+      <summary><code>taxonomy_term_load()</code> has been removed.</summary>
+
+      
+            <h5>Documentation</h5>
+      <ul>
+                <li><a target="_blank" href="https://www.drupal.org/node/2266845">Entities are now classed objects implementing <code>EntityInterface</code></a></li>
+              </ul>
+      
+            <h5>Files Affected</h5>
+      <ul>
+              <li>/data/www-dev/dp.dev.jufist.org/prod/public_html/main/modules/boost/boost.module, line 906</li>
+            </ul>
+                  <aside>Flagged by _function_call:taxonomy_term_load</aside>    </details>
+    <details class="error">
+      <summary><code>drupal_chmod()</code> is now a method of the <code>file_system</code> service.</summary>
+
+      
+            <h5>Documentation</h5>
+      <ul>
+                <li><a target="_blank" href="https://www.drupal.org/node/2418133">File system functions moved into <code>file_system</code> service</a></li>
+              </ul>
+      
+            <h5>Files Affected</h5>
+      <ul>
+              <li>/data/www-dev/dp.dev.jufist.org/prod/public_html/main/modules/boost/boost.module, line 1390</li>
+              <li>/data/www-dev/dp.dev.jufist.org/prod/public_html/main/modules/boost/boost.module, line 1415</li>
+            </ul>
+                  <aside>Flagged by _function_call:drupal_chmod</aside>    </details>
+    <details class="error">
+      <summary><code>drupal_tempnam()</code> is now a method of the <code>file_system</code> service.</summary>
+
+      
+            <h5>Documentation</h5>
+      <ul>
+                <li><a target="_blank" href="https://www.drupal.org/node/2418133">File system functions moved into <code>file_system</code> service</a></li>
+              </ul>
+      
+            <h5>Files Affected</h5>
+      <ul>
+              <li>/data/www-dev/dp.dev.jufist.org/prod/public_html/main/modules/boost/boost.module, line 1366</li>
+            </ul>
+                  <aside>Flagged by _function_call:drupal_tempnam</aside>    </details>
+    <details class="error">
+      <summary><code>drupal_get_form()</code> has moved into the FormBuilder service.</summary>
+
+      
+            <h5>Documentation</h5>
+      <ul>
+                <li><a target="_blank" href="https://www.drupal.org/node/2121003">Form generation functions moved into FormBuilder service</a></li>
+              </ul>
+      
+            <h5>Files Affected</h5>
+      <ul>
+              <li>/data/www-dev/dp.dev.jufist.org/prod/public_html/main/modules/boost/boost.blocks.inc, line 63</li>
+            </ul>
+                  <aside>Flagged by _function_call:drupal_get_form</aside>    </details>
+    <details class="error">
+      <summary><code>format_interval()</code> was moved into the <code>date.formatter</code> service.</summary>
+
+      
+            <h5>Documentation</h5>
+      <ul>
+                <li><a target="_blank" href="https://www.drupal.org/node/2173787"><code>format_interval()</code> moved to date formatter service</a></li>
+              </ul>
+      
+            <h5>Files Affected</h5>
+      <ul>
+              <li>/data/www-dev/dp.dev.jufist.org/prod/public_html/main/modules/boost/boost.module, line 333</li>
+            </ul>
+                  <aside>Flagged by _function_call:format_interval</aside>    </details>
+    <details class="error">
+      <summary><code>l()</code> has been removed.</summary>
+
+      
+            <h5>Documentation</h5>
+      <ul>
+                <li><a target="_blank" href="https://www.drupal.org/node/2346779"><code>l()</code> replaced by URL generation API</a></li>
+              </ul>
+      
+            <h5>Files Affected</h5>
+      <ul>
+              <li>/data/www-dev/dp.dev.jufist.org/prod/public_html/main/modules/boost/boost.admin.modules.inc, line 71</li>
+              <li>/data/www-dev/dp.dev.jufist.org/prod/public_html/main/modules/boost/boost.admin.htaccess.inc, line 160</li>
+            </ul>
+                  <aside>Flagged by _function_call:l</aside>    </details>
+    <details class="error">
+      <summary><code>menu_get_item()</code> has been removed.</summary>
+
+      
+            <h5>Documentation</h5>
+      <ul>
+                <li><a target="_blank" href="https://www.drupal.org/node/2203305"><code>menu_get_item()</code> removed</a></li>
+              </ul>
+      
+            <h5>Files Affected</h5>
+      <ul>
+              <li>/data/www-dev/dp.dev.jufist.org/prod/public_html/main/modules/boost/boost.module, line 822</li>
+            </ul>
+                  <aside>Flagged by _function_call:menu_get_item</aside>    </details>
+    <details class="error">
+      <summary><code>module_invoke()</code> is now a method of the <code>module_handler</code> service.</summary>
+
+      
+            <h5>Documentation</h5>
+      <ul>
+                <li><a target="_blank" href="https://www.drupal.org/node/1894902"><code>module_invoke()</code> replaced by <code>module_handler</code> service</a></li>
+              </ul>
+      
+            <h5>Files Affected</h5>
+      <ul>
+              <li>/data/www-dev/dp.dev.jufist.org/prod/public_html/main/modules/boost/boost.module, line 709</li>
+              <li>/data/www-dev/dp.dev.jufist.org/prod/public_html/main/modules/boost/boost.module, line 870</li>
+              <li>/data/www-dev/dp.dev.jufist.org/prod/public_html/main/modules/boost/boost.module, line 1124</li>
+            </ul>
+                  <aside>Flagged by _function_call:module_invoke</aside>    </details>
+    <details class="error">
+      <summary><code>get_t()</code> has been removed.</summary>
+
+      
+            <h5>Documentation</h5>
+      <ul>
+                <li><a target="_blank" href="https://www.drupal.org/node/2021435"><code>get_t()</code> replaced by <code>t()</code></a></li>
+              </ul>
+      
+            <h5>Files Affected</h5>
+      <ul>
+              <li>/data/www-dev/dp.dev.jufist.org/prod/public_html/main/modules/boost/boost.install, line 50</li>
+            </ul>
+                  <aside>Flagged by _function_call:get_t</aside>    </details>
+    <details class="error">
+      <summary><code>theme()</code> has been renamed to <code>_theme()</code>, and should never be called directly.</summary>
+
+      
+            <h5>Documentation</h5>
+      <ul>
+                <li><a target="_blank" href="https://www.drupal.org/node/2195739"><code>theme()</code> renamed to <code>_theme()</code> and should not be called directly</a></li>
+              </ul>
+      
+            <h5>Files Affected</h5>
+      <ul>
+              <li>/data/www-dev/dp.dev.jufist.org/prod/public_html/main/modules/boost/boost.admin.modules.inc, line 86</li>
+            </ul>
+                  <aside>Flagged by _function_call:theme</aside>    </details>
+    <details class="error">
+      <summary><code>drupal_strtolower()</code> has been moved into the Unicode utility class.</summary>
+
+      
+            <h5>Documentation</h5>
+      <ul>
+                <li><a target="_blank" href="https://www.drupal.org/node/1992584"><code>drupal_strtolower()</code> moved into Unicode component</a></li>
+              </ul>
+      
+            <h5>Files Affected</h5>
+      <ul>
+              <li>/data/www-dev/dp.dev.jufist.org/prod/public_html/main/modules/boost/boost.module, line 670</li>
+              <li>/data/www-dev/dp.dev.jufist.org/prod/public_html/main/modules/boost/boost.module, line 673</li>
+            </ul>
+                  <aside>Flagged by _function_call:drupal_strtolower</aside>    </details>
+    <details class="error">
+      <summary><code>url()</code> has been removed.</summary>
+
+      
+            <h5>Documentation</h5>
+      <ul>
+                <li><a target="_blank" href="https://www.drupal.org/node/2346779"><code>url()</code> replaced by URL generation API</a></li>
+              </ul>
+      
+            <h5>Files Affected</h5>
+      <ul>
+              <li>/data/www-dev/dp.dev.jufist.org/prod/public_html/main/modules/boost/boost.admin.expiration.inc, line 22</li>
+              <li>/data/www-dev/dp.dev.jufist.org/prod/public_html/main/modules/boost/boost.admin.expiration.inc, line 23</li>
+              <li>/data/www-dev/dp.dev.jufist.org/prod/public_html/main/modules/boost/boost.admin.htaccess.inc, line 38</li>
+              <li>/data/www-dev/dp.dev.jufist.org/prod/public_html/main/modules/boost/boost.admin.htaccess.inc, line 38</li>
+              <li>/data/www-dev/dp.dev.jufist.org/prod/public_html/main/modules/boost/boost.admin.htaccess.inc, line 74</li>
+              <li>/data/www-dev/dp.dev.jufist.org/prod/public_html/main/modules/boost/boost.admin.htaccess.inc, line 96</li>
+              <li>/data/www-dev/dp.dev.jufist.org/prod/public_html/main/modules/boost/boost.admin.htaccess.inc, line 96</li>
+              <li>/data/www-dev/dp.dev.jufist.org/prod/public_html/main/modules/boost/boost.admin.htaccess.inc, line 96</li>
+              <li>/data/www-dev/dp.dev.jufist.org/prod/public_html/main/modules/boost/boost.install, line 60</li>
+              <li>/data/www-dev/dp.dev.jufist.org/prod/public_html/main/modules/boost/boost.install, line 93</li>
+            </ul>
+                  <aside>Flagged by _function_call:url</aside>    </details>
+    <details class="error">
+      <summary><code>user_access()</code> is now <code>AccountInterface::hasPermission()</code>.</summary>
+
+      
+            <h5>Documentation</h5>
+      <ul>
+                <li><a target="_blank" href="https://www.drupal.org/node/2049309"><code>user_access()</code> got converted to a method on the user/account interface</a></li>
+              </ul>
+      
+            <h5>Files Affected</h5>
+      <ul>
+              <li>/data/www-dev/dp.dev.jufist.org/prod/public_html/main/modules/boost/boost.blocks.inc, line 61</li>
+              <li>/data/www-dev/dp.dev.jufist.org/prod/public_html/main/modules/boost/boost.admin.inc, line 22</li>
+            </ul>
+                  <aside>Flagged by _function_call:user_access</aside>    </details>
+    <details class="error">
+      <summary><code>variable_get()</code> has been removed.</summary>
+
+      
+            <h5>Documentation</h5>
+      <ul>
+                <li><a target="_blank" href="https://www.drupal.org/node/2183531">The Variable API has been removed</a></li>
+              </ul>
+      
+            <h5>Files Affected</h5>
+      <ul>
+              <li>/data/www-dev/dp.dev.jufist.org/prod/public_html/main/modules/boost/boost.admin.debug.inc, line 19</li>
+              <li>/data/www-dev/dp.dev.jufist.org/prod/public_html/main/modules/boost/boost.drush.inc, line 19</li>
+              <li>/data/www-dev/dp.dev.jufist.org/prod/public_html/main/modules/boost/boost.admin.expiration.inc, line 19</li>
+              <li>/data/www-dev/dp.dev.jufist.org/prod/public_html/main/modules/boost/boost.admin.expiration.inc, line 29</li>
+              <li>/data/www-dev/dp.dev.jufist.org/prod/public_html/main/modules/boost/boost.admin.filesystem.inc, line 19</li>
+              <li>/data/www-dev/dp.dev.jufist.org/prod/public_html/main/modules/boost/boost.admin.filesystem.inc, line 24</li>
+              <li>/data/www-dev/dp.dev.jufist.org/prod/public_html/main/modules/boost/boost.admin.filesystem.inc, line 29</li>
+              <li>/data/www-dev/dp.dev.jufist.org/prod/public_html/main/modules/boost/boost.module, line 240</li>
+              <li>/data/www-dev/dp.dev.jufist.org/prod/public_html/main/modules/boost/boost.module, line 375</li>
+              <li>/data/www-dev/dp.dev.jufist.org/prod/public_html/main/modules/boost/boost.module, line 377</li>
+              <li>/data/www-dev/dp.dev.jufist.org/prod/public_html/main/modules/boost/boost.module, line 396</li>
+              <li>/data/www-dev/dp.dev.jufist.org/prod/public_html/main/modules/boost/boost.module, line 488</li>
+              <li>/data/www-dev/dp.dev.jufist.org/prod/public_html/main/modules/boost/boost.module, line 493</li>
+              <li>/data/www-dev/dp.dev.jufist.org/prod/public_html/main/modules/boost/boost.module, line 524</li>
+              <li>/data/www-dev/dp.dev.jufist.org/prod/public_html/main/modules/boost/boost.module, line 524</li>
+              <li>/data/www-dev/dp.dev.jufist.org/prod/public_html/main/modules/boost/boost.module, line 559</li>
+              <li>/data/www-dev/dp.dev.jufist.org/prod/public_html/main/modules/boost/boost.module, line 582</li>
+              <li>/data/www-dev/dp.dev.jufist.org/prod/public_html/main/modules/boost/boost.module, line 592</li>
+              <li>/data/www-dev/dp.dev.jufist.org/prod/public_html/main/modules/boost/boost.module, line 665</li>
+              <li>/data/www-dev/dp.dev.jufist.org/prod/public_html/main/modules/boost/boost.module, line 666</li>
+              <li>/data/www-dev/dp.dev.jufist.org/prod/public_html/main/modules/boost/boost.module, line 1074</li>
+              <li>/data/www-dev/dp.dev.jufist.org/prod/public_html/main/modules/boost/boost.module, line 1077</li>
+              <li>/data/www-dev/dp.dev.jufist.org/prod/public_html/main/modules/boost/boost.module, line 1098</li>
+              <li>/data/www-dev/dp.dev.jufist.org/prod/public_html/main/modules/boost/boost.module, line 1163</li>
+              <li>/data/www-dev/dp.dev.jufist.org/prod/public_html/main/modules/boost/boost.module, line 1165</li>
+              <li>/data/www-dev/dp.dev.jufist.org/prod/public_html/main/modules/boost/boost.module, line 1410</li>
+              <li>/data/www-dev/dp.dev.jufist.org/prod/public_html/main/modules/boost/boost.module, line 1431</li>
+              <li>/data/www-dev/dp.dev.jufist.org/prod/public_html/main/modules/boost/boost.module, line 1497</li>
+              <li>/data/www-dev/dp.dev.jufist.org/prod/public_html/main/modules/boost/boost.module, line 1526</li>
+              <li>/data/www-dev/dp.dev.jufist.org/prod/public_html/main/modules/boost/boost.module, line 1527</li>
+              <li>/data/www-dev/dp.dev.jufist.org/prod/public_html/main/modules/boost/boost.module, line 1559</li>
+              <li>/data/www-dev/dp.dev.jufist.org/prod/public_html/main/modules/boost/boost.module, line 1588</li>
+              <li>/data/www-dev/dp.dev.jufist.org/prod/public_html/main/modules/boost/boost.module, line 1615</li>
+              <li>/data/www-dev/dp.dev.jufist.org/prod/public_html/main/modules/boost/boost.module, line 1626</li>
+              <li>/data/www-dev/dp.dev.jufist.org/prod/public_html/main/modules/boost/boost.admin.htaccess.inc, line 43</li>
+              <li>/data/www-dev/dp.dev.jufist.org/prod/public_html/main/modules/boost/boost.admin.htaccess.inc, line 82</li>
+              <li>/data/www-dev/dp.dev.jufist.org/prod/public_html/main/modules/boost/boost.admin.htaccess.inc, line 89</li>
+              <li>/data/www-dev/dp.dev.jufist.org/prod/public_html/main/modules/boost/boost.admin.htaccess.inc, line 101</li>
+              <li>/data/www-dev/dp.dev.jufist.org/prod/public_html/main/modules/boost/boost.admin.htaccess.inc, line 111</li>
+              <li>/data/www-dev/dp.dev.jufist.org/prod/public_html/main/modules/boost/boost.admin.htaccess.inc, line 117</li>
+              <li>/data/www-dev/dp.dev.jufist.org/prod/public_html/main/modules/boost/boost.admin.htaccess.inc, line 123</li>
+              <li>/data/www-dev/dp.dev.jufist.org/prod/public_html/main/modules/boost/boost.admin.htaccess.inc, line 128</li>
+              <li>/data/www-dev/dp.dev.jufist.org/prod/public_html/main/modules/boost/boost.admin.htaccess.inc, line 128</li>
+              <li>/data/www-dev/dp.dev.jufist.org/prod/public_html/main/modules/boost/boost.admin.htaccess.inc, line 128</li>
+              <li>/data/www-dev/dp.dev.jufist.org/prod/public_html/main/modules/boost/boost.admin.htaccess.inc, line 129</li>
+              <li>/data/www-dev/dp.dev.jufist.org/prod/public_html/main/modules/boost/boost.admin.htaccess.inc, line 178</li>
+              <li>/data/www-dev/dp.dev.jufist.org/prod/public_html/main/modules/boost/boost.admin.htaccess.inc, line 179</li>
+              <li>/data/www-dev/dp.dev.jufist.org/prod/public_html/main/modules/boost/boost.admin.htaccess.inc, line 183</li>
+              <li>/data/www-dev/dp.dev.jufist.org/prod/public_html/main/modules/boost/boost.admin.htaccess.inc, line 184</li>
+              <li>/data/www-dev/dp.dev.jufist.org/prod/public_html/main/modules/boost/boost.admin.htaccess.inc, line 185</li>
+              <li>/data/www-dev/dp.dev.jufist.org/prod/public_html/main/modules/boost/boost.admin.htaccess.inc, line 230</li>
+              <li>/data/www-dev/dp.dev.jufist.org/prod/public_html/main/modules/boost/boost.admin.htaccess.inc, line 233</li>
+              <li>/data/www-dev/dp.dev.jufist.org/prod/public_html/main/modules/boost/boost.admin.htaccess.inc, line 236</li>
+              <li>/data/www-dev/dp.dev.jufist.org/prod/public_html/main/modules/boost/boost.install, line 54</li>
+              <li>/data/www-dev/dp.dev.jufist.org/prod/public_html/main/modules/boost/boost.admin.inc, line 40</li>
+              <li>/data/www-dev/dp.dev.jufist.org/prod/public_html/main/modules/boost/boost.admin.inc, line 45</li>
+            </ul>
+                  <aside>Flagged by _function_call:variable_get</aside>    </details>
+    <details class="error">
+      <summary><code>variable_set()</code> has been removed.</summary>
+
+      
+            <h5>Documentation</h5>
+      <ul>
+                <li><a target="_blank" href="https://www.drupal.org/node/2183531">The Variable API has been removed</a></li>
+              </ul>
+      
+            <h5>Files Affected</h5>
+      <ul>
+              <li>/data/www-dev/dp.dev.jufist.org/prod/public_html/main/modules/boost/boost.module, line 1079</li>
+              <li>/data/www-dev/dp.dev.jufist.org/prod/public_html/main/modules/boost/boost.module, line 1166</li>
+            </ul>
+                  <aside>Flagged by _function_call:variable_set</aside>    </details>
+    <details class="error">
+      <summary><code>watchdog()</code> has been removed.</summary>
+
+      
+            <h5>Documentation</h5>
+      <ul>
+                <li><a target="_blank" href="https://www.drupal.org/node/2270941"><code>watchdog()</code> is deprecated</a></li>
+              </ul>
+      
+            <h5>Files Affected</h5>
+      <ul>
+              <li>/data/www-dev/dp.dev.jufist.org/prod/public_html/main/modules/boost/boost.module, line 378</li>
+              <li>/data/www-dev/dp.dev.jufist.org/prod/public_html/main/modules/boost/boost.module, line 398</li>
+              <li>/data/www-dev/dp.dev.jufist.org/prod/public_html/main/modules/boost/boost.module, line 1368</li>
+              <li>/data/www-dev/dp.dev.jufist.org/prod/public_html/main/modules/boost/boost.module, line 1378</li>
+              <li>/data/www-dev/dp.dev.jufist.org/prod/public_html/main/modules/boost/boost.module, line 1412</li>
+              <li>/data/www-dev/dp.dev.jufist.org/prod/public_html/main/modules/boost/boost.module, line 1444</li>
+              <li>/data/www-dev/dp.dev.jufist.org/prod/public_html/main/modules/boost/boost.module, line 1498</li>
+              <li>/data/www-dev/dp.dev.jufist.org/prod/public_html/main/modules/boost/boost.module, line 1630</li>
+            </ul>
+                  <aside>Flagged by _function_call:watchdog</aside>    </details>
+    <details class="warning">
+      <summary>Many common functions, shared variables, and constants have been renamed.</summary>
+
+      
+            <h5>Documentation</h5>
+      <ul>
+                <li><a target="_blank" href="https://www.drupal.org/node/2324935">The global theme variables have been replaced by an ActiveTheme object</a></li>
+              </ul>
+      
+                      </details>
+    <details class="error">
+      <summary>Module info files' <code>core</code> key must have a value of <code>8.x</code>.</summary>
+
+      
+            <h5>Documentation</h5>
+      <ul>
+                <li><a target="_blank" href="https://www.drupal.org/node/1935708"><code>.info</code> files are now <code>.info.yml</code> files</a></li>
+              </ul>
+      
+            <h5>Files Affected</h5>
+      <ul>
+              <li>/data/www-dev/dp.dev.jufist.org/prod/public_html/main/modules/boost/boost.info</li>
+            </ul>
+                  <aside>Flagged by info</aside>    </details>
+    <details class="error">
+      <summary>Info files must contain a <code>type</code> key.</summary>
+
+      
+            <h5>Documentation</h5>
+      <ul>
+                <li><a target="_blank" href="https://www.drupal.org/node/1935708#type"><code>.info</code> files are now <code>.info.yml</code> files</a></li>
+              </ul>
+      
+            <h5>Files Affected</h5>
+      <ul>
+              <li>/data/www-dev/dp.dev.jufist.org/prod/public_html/main/modules/boost/boost.info</li>
+            </ul>
+                  <aside>Flagged by info</aside>    </details>
+    <details class="error">
+      <summary>Modules no longer declare classes in their info file.</summary>
+
+      
+            <h5>Documentation</h5>
+      <ul>
+                <li><a target="_blank" href="https://www.drupal.org/node/1935708#files"><code>.info</code> files are now <code>.info.yml</code> files</a></li>
+              </ul>
+      
+            <h5>Files Affected</h5>
+      <ul>
+              <li>/data/www-dev/dp.dev.jufist.org/prod/public_html/main/modules/boost/boost.info</li>
+            </ul>
+                  <aside>Flagged by info</aside>    </details>
+    <details class="error">
+      <summary>Module info files' <code>configure</code> key must be a route name, not a path.</summary>
+
+      
+            <h5>Documentation</h5>
+      <ul>
+                <li><a target="_blank" href="https://www.drupal.org/node/1935708#configure"><code>.info</code> files are now <code>.info.yml</code> files</a></li>
+              </ul>
+      
+            <h5>Files Affected</h5>
+      <ul>
+              <li>/data/www-dev/dp.dev.jufist.org/prod/public_html/main/modules/boost/boost.info</li>
+            </ul>
+                  <aside>Flagged by info</aside>    </details>
+    <details class="error">
+      <summary>The signature of hook_form_alter() has changed in Drupal 8.</summary>
+
+      
+            <h5>Documentation</h5>
+      <ul>
+                <li><a target="_blank" href="https://api.drupal.org/api/drupal/core%21lib%21Drupal%21Core%21Form%21form.api.php/function/hook_form_alter/8"><code>hook_form_alter()</code> documentation</a></li>
+              </ul>
+      
+            <h5>Files Affected</h5>
+      <ul>
+              <li>/data/www-dev/dp.dev.jufist.org/prod/public_html/main/modules/boost/boost.module, line 263</li>
+            </ul>
+                  <aside>Flagged by hook_form_alter</aside>    </details>
+
+    </details>
+    </body>
+</html>

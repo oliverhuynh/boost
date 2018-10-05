@@ -1,0 +1,6 @@
+boost.settings:
+  type: mapping
+  label: Settings
+  mapping:
+    boost_ignore_flush:
+      type: integer

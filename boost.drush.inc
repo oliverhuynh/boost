@@ -16,7 +16,7 @@ function boost_drush_cache_clear(&$types) {
  * Clears all Boost cached data.
  */
 function boost_drush_cache_clear_all() {
-  $ignore = variable_get('boost_ignore_flush', 0);
+  $ignore = \Drupal::config('boost.settings')->get('boost_ignore_flush');
   $GLOBALS['conf']['boost_ignore_flush'] = 0;
 
   boost_flush_caches();

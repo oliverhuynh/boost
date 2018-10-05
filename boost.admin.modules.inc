@@ -68,7 +68,10 @@ function boost_compatible_output() {
   foreach ($recommended as $module => $data) {
     $status = in_array($module, $not_installed) ? t('Not Installed') : (in_array($module, $disabled) ? t('Disabled') : t('Enabled'));
     $trclass = in_array($module, $not_installed) ? 'info' : (in_array($module, $disabled) ? 'warning' : 'ok' ) ;
-    $module_link = l($data['title'], $data['link']);
+    // @FIXME
+// l() expects a Url object, created from a route name or external URI.
+// $module_link = l($data['title'], $data['link']);
+
 
     $rows[] = array(
       'data' => array(
@@ -83,7 +86,16 @@ function boost_compatible_output() {
 
   $output = '<p class="boost-listmodules-intro">' . t("The following modules can be useful for most common use cases. For more information, please read and contribute to the <a href='!url'>Boost handbook</a>.", array('!url' => 'http://drupal.org/node/1434362')) . '</p>';
 
-  $output .= theme('table', array('attributes' => array('class' => array('system-status-report')), 'header' => $header, 'rows' => $rows));
+  // @FIXME
+// theme() has been renamed to _theme() and should NEVER be called directly.
+// Calling _theme() directly can alter the expected output and potentially
+// introduce security issues (see https://www.drupal.org/node/2195739). You
+// should use renderable arrays instead.
+// 
+// 
+// @see https://www.drupal.org/node/2195739
+// $output .= theme('table', array('attributes' => array('class' => array('system-status-report')), 'header' => $header, 'rows' => $rows));
+
 
   return array(
    'my_page' => array(
