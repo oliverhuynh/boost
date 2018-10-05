@@ -420,7 +420,8 @@ function boost_page_delivery_callback_alter(&$callback, $set = FALSE) {
  *   Base Path
  */
 function boost_transform_url($url = NULL, $b_path = NULL) {
-  global $base_root, $base_path;
+  global $base_root;
+  $base_path = base_path();
   $items = &drupal_static(__FUNCTION__);
 
   // Set defaults if none passed in.
@@ -493,7 +494,8 @@ function boost_get_normal_cache_dir() {
  *   Base Path
  */
 function boost_parse_url($url = NULL, $b_path = NULL) {
-  global $base_root, $base_path;
+  global $base_root;
+  $base_path = base_path();
   // Set defaults.
   if ($url === NULL) {
     $url = $base_root . \Drupal::request()->getRequestUri();
@@ -1507,7 +1509,8 @@ function boost_form_submit_handler() {
  * Overwrite old htaccess rules with new ones.
  */
 function boost_htaccess_cache_dir_put() {
-  global $_boost, $base_path, $base_root;
+  global $_boost, $base_root;
+  $base_path = base_path();
   if (empty($_boost['base_dir'])) {
     $url = $base_root . \Drupal::request()->getRequestUri();
     $parts = parse_url($url);
