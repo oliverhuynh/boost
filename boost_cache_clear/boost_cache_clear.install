@@ -1,0 +1,39 @@
+<?php
+
+/**
+ * @file
+ * Boost cache Clear table schema.
+ */
+
+/**
+ * Implements hook_schema().
+ */
+function boost_cache_clear_schema() {
+  $schema['boost_cache_clear'] = array(
+    'description' => 'Base table for Boost cache clear.',
+    'fields' => array(
+      'id' => array(
+        'description' => 'The primary identifier for refer Content types.',
+        'type' => 'serial',
+        'unsigned' => TRUE,
+        'not null' => TRUE,
+      ),
+      'content_type' => array(
+        'description' => 'Unique Content type names.',
+        'type' => 'varchar',
+        'length' => 100,
+        'not null' => TRUE,
+        'default' => '',
+      ),
+      'pages' => array(
+        'type' => 'blob',
+        'not null' => TRUE,
+        'size' => 'big',
+        'serialize' => TRUE,
+        'description' => 'URL list for clear caches respect to Content types.',
+      ),
+    ),
+    'primary key' => array('id'),
+  );
+  return $schema;
+}

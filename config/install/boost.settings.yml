@@ -1,0 +1,15 @@
+boost_ignore_flush: 0
+boost_root_cache_dir: "cache"
+boost_normal_dir: "normal"
+boost_char: "_"
+boost_charset_type: "utf-8"
+boost_expire_cron: 1
+boost_message_debug: 0
+boost_cacheability_option: 0
+boost_cacheability_pages: ""
+boost_apache_etag: 3
+boost_add_default_charset: 1
+boost_apache_xheader: 1
+boost_match_symlinks_options: 1
+boost_preload_path: "/tmp"
+cache_404: 1

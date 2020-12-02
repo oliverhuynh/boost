@@ -1,0 +1,3 @@
+config_boost_cache_clear:
+  title: 'Configuration for Boost cache clear'
+  description: 'Configuration page for Content type level boost cache management. Warning: Give to trusted roles only; this permission has security implications.'

@@ -1,0 +1,3 @@
+'boost flush pages':
+  title: 'Flush pages from Boost cache'
+  description: 'Allow users to flush individual pages from the Boost cache using the Boost status block.'

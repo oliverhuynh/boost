@@ -1,0 +1,5 @@
+boost.settings.form:
+  route_name: boost.settings.form
+  parent: system.admin_config_system
+  title: 'Boost Cache'
+  weight: 10

@@ -1,0 +1,7 @@
+name: 'Boost Cache Clear'
+description: 'CCK level Advanced Boost cache management'
+package: 'Performance and scalability'
+dependencies:
+  - boost
+core: 8.x
+type: module

@@ -1,0 +1,10 @@
+boost.settings:
+  type: mapping
+  label: Settings
+  mapping:
+    boost_ignore_flush:
+      type: integer
+    boost_preload_path:
+      type: string
+    cache_404:
+      type: integer
