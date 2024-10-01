@@ -9,31 +9,31 @@
  * Implements hook_schema().
  */
 function boost_cache_clear_schema() {
-  $schema['boost_cache_clear'] = array(
+  $schema['boost_cache_clear'] = [
     'description' => 'Base table for Boost cache clear.',
-    'fields' => array(
-      'id' => array(
+    'fields' => [
+      'id' => [
         'description' => 'The primary identifier for refer Content types.',
         'type' => 'serial',
         'unsigned' => TRUE,
         'not null' => TRUE,
-      ),
-      'content_type' => array(
+      ],
+      'content_type' => [
         'description' => 'Unique Content type names.',
         'type' => 'varchar',
         'length' => 100,
         'not null' => TRUE,
         'default' => '',
-      ),
-      'pages' => array(
+      ],
+      'pages' => [
         'type' => 'blob',
         'not null' => TRUE,
         'size' => 'big',
         'serialize' => TRUE,
         'description' => 'URL list for clear caches respect to Content types.',
-      ),
-    ),
-    'primary key' => array('id'),
-  );
+      ],
+    ],
+    'primary key' => ['id'],
+  ];
   return $schema;
 }

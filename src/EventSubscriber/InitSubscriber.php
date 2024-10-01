@@ -1,18 +1,11 @@
-<?php /**
- * @file
- * Contains \Drupal\boost\EventSubscriber\ExitSubscriber.
- */
+<?php
 
 namespace Drupal\boost\EventSubscriber;
 
 use Symfony\Component\HttpKernel\KernelEvents;
 use Symfony\Component\EventDispatcher\EventSubscriberInterface;
-use Drupal\Core\Render\HtmlResponse;
 use Drupal\Core\Render\AttachmentsResponseProcessorInterface;
 use Drupal\Core\Session\AccountProxy;
-use Symfony\Component\HttpKernel\Event\GetResponseEvent;
-use Symfony\Component\HttpKernel\Event\FilterResponseEvent;
-use Symfony\Component\HttpFoundation\Response;
 
 class InitSubscriber implements EventSubscriberInterface {
   protected $htmlResponseAttachmentsProcessor;
@@ -29,6 +22,7 @@ class InitSubscriber implements EventSubscriberInterface {
     $this->htmlResponseAttachmentsProcessor = $html_response_attachments_processor;
     $this->account = $account;
   }
+
   /**
    * {@inheritdoc}
    */
@@ -43,8 +37,9 @@ class InitSubscriber implements EventSubscriberInterface {
 
     // Make sure the page is/should be cached according to our current configuration.
     // Start with the quick checks
-    if (strpos($_SERVER['SCRIPT_FILENAME'], 'index.php') === FALSE || $_SERVER['SERVER_SOFTWARE'] === 'PHP CLI' || ($_SERVER['REQUEST_METHOD'] != 'GET' && $_SERVER['REQUEST_METHOD'] != 'HEAD') || isset($_GET['nocache']) || \Drupal::config('system')->get('maintenance_mode') || defined('MAINTENANCE_MODE') || !empty($_SESSION['messages']) // do not cache pages with messages
-) {
+    // do not cache pages with messages
+    if (strpos($_SERVER['SCRIPT_FILENAME'], 'index.php') === FALSE || $_SERVER['SERVER_SOFTWARE'] === 'PHP CLI' || ($_SERVER['REQUEST_METHOD'] != 'GET' && $_SERVER['REQUEST_METHOD'] != 'HEAD') || isset($_GET['nocache']) || \Drupal::config('system')->get('maintenance_mode') || defined('MAINTENANCE_MODE') || !empty($_SESSION['messages'])
+    ) {
       $_boost['cache_this'] = FALSE;
     }
     else {

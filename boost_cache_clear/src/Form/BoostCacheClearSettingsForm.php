@@ -1,15 +1,9 @@
 <?php
 
-/**
- * @file
- * Contains \Drupal\boost_cache_clear\Form\BoostCacheClearSettingsForm.
- */
-
 namespace Drupal\boost_cache_clear\Form;
 
 use Drupal\Core\Form\FormBase;
 use Drupal\Core\Form\FormStateInterface;
-use Drupal\Core\Render\Element;
 
 class BoostCacheClearSettingsForm extends FormBase {
 
@@ -50,4 +44,3 @@ class BoostCacheClearSettingsForm extends FormBase {
   }
 
 }
-?>

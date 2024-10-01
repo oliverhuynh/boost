@@ -1,9 +1,5 @@
 <?php
 
-/**
- * @file
- * Contains \Drupal\boost\Form\BoostAdminSettings
- */
 namespace Drupal\boost\Form;
 
 use Drupal\Core\Form\ConfigFormBase;
@@ -13,6 +9,7 @@ use Drupal\Core\Form\FormStateInterface;
  * Configure Boost settings for this site.
  */
 class BoostFileSystemForm extends ConfigFormBase {
+
   /**
    * {@inheritdoc}
    */
@@ -33,21 +30,21 @@ class BoostFileSystemForm extends ConfigFormBase {
    * {@inheritdoc}
    */
   public function buildForm(array $form, FormStateInterface $form_state) {
-    $form['boost_root_cache_dir'] = array(
+    $form['boost_root_cache_dir'] = [
       '#type' => 'textfield',
       '#title' => t('Root cache directory'),
       '#default_value' => \Drupal::config('boost.settings')->get('boost_root_cache_dir'),
-    );
-    $form['boost_normal_dir'] = array(
+    ];
+    $form['boost_normal_dir'] = [
       '#type' => 'textfield',
       '#title' => t('Normal cache directory'),
       '#default_value' => \Drupal::config('boost.settings')->get('boost_normal_dir'),
-    );
-    $form['boost_char'] = array(
+    ];
+    $form['boost_char'] = [
       '#type' => 'textfield',
       '#title' => t('Character replacement for "?" in the URL'),
       '#default_value' => \Drupal::config('boost.settings')->get('boost_char'),
-    );
+    ];
 
     // @TODO: Oliver: reset htaccess on submit;
     // $form['#submit'][] = 'boost_form_submit_handler';
@@ -60,12 +57,10 @@ class BoostFileSystemForm extends ConfigFormBase {
    */
   public function submitForm(array &$form, FormStateInterface $form_state) {
     /*$this->config('boost.settings')
-      ->set('directory', $form_state->getValue('boost_directory'))
-      ->save();*/
+    ->set('directory', $form_state->getValue('boost_directory'))
+    ->save();*/
 
     parent::submitForm($form, $form_state);
   }
 
 }
-
-?>

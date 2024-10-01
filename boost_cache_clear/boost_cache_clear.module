@@ -1,7 +1,13 @@
 <?php
+
+/**
+ * @file
+ */
+
 use Drupal\Core\Form\FormStateInterface;
 use Drupal\node\NodeInterface;
 use Drupal\comment\CommentInterface;
+
 /**
  * @file
  * Define permissions, Menus, Hooks for Boost cache clear.
@@ -11,15 +17,15 @@ use Drupal\comment\CommentInterface;
  * Implements hook_menu().
  */
 function boost_cache_clear_menu() {
-  $items = array();
-  $items['admin/config/system/boost-cache-clear'] = array(
+  $items = [];
+  $items['admin/config/system/boost-cache-clear'] = [
     'title' => 'Boost cache clear',
     'description' => 'Clear Boost cache by passing their URL alias.',
     'page callback' => 'drupal_get_form',
-    'page arguments' => array('boost_cache_clear_settings_form'),
-    'access arguments' => array('config_boost_cache_clear'),
+    'page arguments' => ['boost_cache_clear_settings_form'],
+    'access arguments' => ['config_boost_cache_clear'],
     'file' => 'boost_cache_clear.admin.inc',
-  );
+  ];
   return $items;
 }
 
@@ -27,12 +33,12 @@ function boost_cache_clear_menu() {
  * Implements hook_permission().
  */
 function boost_cache_clear_permission() {
-  return array(
-    'config_boost_cache_clear' => array(
+  return [
+    'config_boost_cache_clear' => [
       'title' => 'Configuration for Boost cache clear',
       'description' => t('Configuration page for Content type level boost cache management. Warning: Give to trusted roles only; this permission has security implications.'),
-    ),
-  );
+    ],
+  ];
 }
 
 /**
@@ -50,35 +56,35 @@ function boost_cache_clear_form_alter(&$form, FormStateInterface &$form_state, $
       $urls_clear = boost_cache_clear_query_handle('select', $data);
     }
     // The additional buttons and tab settings.
-    $form['boost_cache_clear'] = array(
+    $form['boost_cache_clear'] = [
       '#type' => 'fieldset',
       '#title' => t('Boost Cache Clear settings'),
       '#group' => 'additional_settings',
       '#collapsible' => TRUE,
       '#collapsed' => TRUE,
       '#weight' => 10,
-    );
+    ];
     // Enable Boost cache clear.
-    $form['boost_cache_clear']['enable_bcc'] = array(
+    $form['boost_cache_clear']['enable_bcc'] = [
       '#type' => 'checkbox',
       '#title' => t('Enable Boost Clear Cache'),
       '#description' => t('Enable Boost Clear Cache for this Content type and specify the pages.'),
       '#default_value' => $enable_bcc,
-    );
-    $clear_title = $form['#node_type']->name ? t('Clear Boost cache for specific pages while node is creat/edit in @type', array('@type' => $form['#node_type']->name)) : t('Clear Boost cache for specific pages while node is creat/edit in this content type.');
+    ];
+    $clear_title = $form['#node_type']->name ? t('Clear Boost cache for specific pages while node is creat/edit in @type', ['@type' => $form['#node_type']->name]) : t('Clear Boost cache for specific pages while node is creat/edit in this content type.');
     // Specify the pages.
-    $form['boost_cache_clear']['page_clear_bcc'] = array(
+    $form['boost_cache_clear']['page_clear_bcc'] = [
       '#type' => 'textarea',
       '#title' => $clear_title,
       '#description' => t('Specify pages by using their paths. Enter one path per line. The "*" character is a wildcard. Example paths are blog for the blog page and blog/* for every personal blog and blog?page=* for query strings. "/" is the front page. "*" is for clear entire boost cache.'),
       '#default_value' => isset($urls_clear) ? $urls_clear : '',
       '#wysiwyg' => FALSE,
-      '#states' => array(
-        'visible' => array(
-          ':input[name="enable_bcc"]' => array('checked' => TRUE),
-        ),
-      ),
-    );
+      '#states' => [
+        'visible' => [
+          ':input[name="enable_bcc"]' => ['checked' => TRUE],
+        ],
+      ],
+    ];
     $form['#validate'][] = 'boost_cache_clear_confirm_validate';
     $form['#submit'][] = 'boost_cache_clear_confirm_submit';
   }
@@ -147,20 +153,20 @@ function boost_cache_clear_comment_delete(CommentInterface $comment) {
  */
 function boost_cache_clear_urls_generate($content_type, $nid) {
 
-    // @TODO: Check the handle
-    // module_load_include('inc', 'boost_cache_clear', 'boost_cache_clear.admin');
-    // $data['content_type'] = $content_type;
+  // @TODO: Check the handle
+  // module_load_include('inc', 'boost_cache_clear', 'boost_cache_clear.admin');
+  // $data['content_type'] = $content_type;
   // $enable_bcc = boost_cache_clear_query_handle('count', $data);
-    // if ($enable_bcc) {
-      // $pages = boost_cache_clear_query_handle('select', $data);
-      // $urls = explode(PHP_EOL, $pages);
-    $urls = ['/node/' . $nid];
-    $item = \Drupal::service('path_alias.manager');
-    $urls[] = $item->getAliasByPath('/node/' . $nid);
-    foreach ($urls as $value) {
-      boost_cache_clear_by_url($value);
-    }
-    // }
+  // if ($enable_bcc) {
+  // $pages = boost_cache_clear_query_handle('select', $data);
+  // $urls = explode(PHP_EOL, $pages);
+  $urls = ['/node/' . $nid];
+  $item = \Drupal::service('path_alias.manager');
+  $urls[] = $item->getAliasByPath('/node/' . $nid);
+  foreach ($urls as $value) {
+    boost_cache_clear_by_url($value);
+  }
+  // }
 }
 
 /**
@@ -179,7 +185,7 @@ function boost_cache_clear_by_url($url) {
     $_boost = boost_transform_url($dir_path);
     if (file_exists($_boost['directory'])) {
       $count = _boost_rmdir($_boost['directory'], TRUE);
-      \Drupal::logger('boost_cache_clear')->info('%count files removed from boost cache', array('%count' => $count));
+      \Drupal::logger('boost_cache_clear')->info('%count files removed from boost cache', ['%count' => $count]);
     }
   }
   else {
@@ -201,7 +207,7 @@ function boost_cache_clear_by_url($url) {
     foreach ($filename_array as $file_path) {
       if (file_exists($file_path)) {
         if (unlink($file_path)) {
-          boost_log('Removed !file from the boost cache.', array('!file' => $file_path), WATCHDOG_DEBUG);
+          boost_log('Removed !file from the boost cache.', ['!file' => $file_path], WATCHDOG_DEBUG);
         }
       }
     }

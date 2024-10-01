@@ -4,16 +4,17 @@
  * @file
  * Prints the cache status of the currently displayed page.
  *
- * see @boost_block_view()
+ * See @boost_block_view()
  */
+
 function boost_block_view_status() {
   $user = \Drupal::currentUser();
 
-  $block = array();
+  $block = [];
   $block['subject'] = '';
 
   // Don't show the block to anonymous users
-  if (! $user->uid) {
+  if (!$user->uid) {
     return $block;
   }
 
@@ -26,11 +27,11 @@ function boost_block_view_status() {
 
   $_boost = boost_is_cacheable($_boost, 'status');
 
-  if (! $_boost['is_cacheable']) {
-    $reason = ($_boost['is_cacheable_reason'] ? $_boost['is_cacheable_reason'] : 'reason unknown');
-    $block['content']['is_not_cacheable'] = array(
-      '#markup' => '<p>' . t('This page will not be cached: %reason', array('%reason' => $reason)) . '</p>',
-    );
+  if (!$_boost['is_cacheable']) {
+    $reason = $_boost['is_cacheable_reason'] ? $_boost['is_cacheable_reason'] : 'reason unknown';
+    $block['content']['is_not_cacheable'] = [
+      '#markup' => '<p>' . t('This page will not be cached: %reason', ['%reason' => $reason]) . '</p>',
+    ];
 
     return $block;
   }
@@ -39,7 +40,7 @@ function boost_block_view_status() {
   $_boost['header_info'] = boost_get_header_info();
   $_boost['matched_header_info'] = boost_match_header_attributes($_boost['header_info']);
 
-  $filename = (isset($_boost['filename']) ? $_boost['filename'] . '.' . $_boost['matched_header_info']['extension'] : 'n/a');
+  $filename = isset($_boost['filename']) ? $_boost['filename'] . '.' . $_boost['matched_header_info']['extension'] : 'n/a';
 
   if (file_exists($filename)) {
     // be precise on the time (seconds and timezone)
@@ -49,35 +50,37 @@ function boost_block_view_status() {
     $generated = 'not cached yet (either no one has visited the page recently, or something is preventing the cache from being generated).';
   }
 
-  $block['content'] = array(
-    'filename' => array(
-      '#markup' => '<p>' . t('File: %filename', array('%filename' => $filename)) . '</p>',
-    ),
-    'generated' => array(
-      '#markup' => '<p>' . t('Generated: %generated', array('%generated' => $generated)) . '</p>',
-    ),
-  );
+  $block['content'] = [
+    'filename' => [
+      '#markup' => '<p>' . t('File: %filename', ['%filename' => $filename]) . '</p>',
+    ],
+    'generated' => [
+      '#markup' => '<p>' . t('Generated: %generated', ['%generated' => $generated]) . '</p>',
+    ],
+  ];
 
   if (file_exists($filename) && \Drupal::currentUser()->hasPermission('boost flush pages')) {
     // 1922532 - Variable required to remove warning under PHP 5.4
     $form = \Drupal::formBuilder()->getForm('boost_block_flush_form');
-    $block['content']['flush'] = array(
-      '#markup' => \Drupal::service("renderer")->render($form),
-    );
+    $block['content']['flush'] = [
+      '#markup' => \Drupal::service('renderer')->render($form),
+    ];
   }
 
   return $block;
 }
-function boost_block_flush_form() {
-  $form = array();
 
-  $form['boost_cache']['clear'] = array(
+function boost_block_flush_form() {
+  $form = [];
+
+  $form['boost_cache']['clear'] = [
     '#type' => 'submit',
     '#value' => t('Flush Page'),
-  );
+  ];
 
   return $form;
 }
+
 function boost_block_flush_form_submit() {
   $_boost = boost_transform_url();
 
@@ -89,13 +92,15 @@ function boost_block_flush_form_submit() {
 
   if (is_file($filename)) {
     if (unlink($filename)) {
-      \Drupal::messenger()->addStatus(t('%filename was deleted from the Boost cache', array('%filename' => $filename)));
+      \Drupal::messenger()->addStatus(t('%filename was deleted from the Boost cache', ['%filename' => $filename]));
     }
     else {
-      \Drupal::messenger()->addStatus(t('%filename could not be deleted, check file permissions on disk to see if the web server can write/delete the file.', array('%filename' => $filename)));
+      \Drupal::messenger()->addStatus(
+        t('%filename could not be deleted, check file permissions on disk to see if the web server can write/delete the file.', ['%filename' => $filename])
+          );
     }
   }
   else {
-    \Drupal::messenger()->addStatus(t('%filename was not found in the Boost cache and could not be deleted.', array('%filename' => $filename)));
+    \Drupal::messenger()->addStatus(t('%filename was not found in the Boost cache and could not be deleted.', ['%filename' => $filename]));
   }
 }

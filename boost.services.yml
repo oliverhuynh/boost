@@ -3,11 +3,9 @@ services:
     class: Drupal\boost\EventSubscriber\InitSubscriber
     arguments: ['@html_response.attachments_processor', '@current_user']
     tags:
-      -
-        name: event_subscriber
+      - name: event_subscriber
   exit_subscriber:
     class: Drupal\boost\EventSubscriber\ExitSubscriber
     arguments: ['@html_response.attachments_processor', '@current_user']
     tags:
-      -
-        name: event_subscriber
+      - name: event_subscriber

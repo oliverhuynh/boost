@@ -1,7 +1,4 @@
-<?php /**
- * @file
- * Contains \Drupal\boost\EventSubscriber\ExitSubscriber.
- */
+<?php
 
 namespace Drupal\boost\EventSubscriber;
 
@@ -10,9 +7,7 @@ use Symfony\Component\EventDispatcher\EventSubscriberInterface;
 use Drupal\Core\Render\HtmlResponse;
 use Drupal\Core\Render\AttachmentsResponseProcessorInterface;
 use Drupal\Core\Session\AccountProxy;
-use Symfony\Component\HttpKernel\Event\GetResponseEvent;
 use Symfony\Component\HttpKernel\Event\FilterResponseEvent;
-use Symfony\Component\HttpFoundation\Response;
 
 class ExitSubscriber implements EventSubscriberInterface {
   protected $htmlResponseAttachmentsProcessor;
@@ -35,10 +30,10 @@ class ExitSubscriber implements EventSubscriberInterface {
    */
   public static function getSubscribedEvents() {
     return [
-      KernelEvents::RESPONSE => array(
-        array('onEvent', -100)
-      ),
-      //KernelEvents::TERMINATE => ['onEvent', -100]
+      KernelEvents::RESPONSE => [
+        ['onEvent', -100],
+      ],
+      // KernelEvents::TERMINATE => ['onEvent', -100]
     ];
   }
 
@@ -71,28 +66,28 @@ class ExitSubscriber implements EventSubscriberInterface {
 
     // Do not cache 404
     if ($_boost['menu_item']['status'] == 404) {
-        $cache_404 = \Drupal::config('boost.settings')->get('cache_404');
-        if ($cache_404) {
-            $_boost['force'] = true;
-        }
+      $cache_404 = \Drupal::config('boost.settings')->get('cache_404');
+      if ($cache_404) {
+        $_boost['force'] = TRUE;
+      }
     }
 
     if (!isset($_boost['force'])) {
-        if (isset($_boost['cache_this']) && $_boost['cache_this'] == FALSE) {
-          return;
-        }
-        elseif (!isset($_boost['is_cacheable']) || !$_boost['is_cacheable']) {
-          return;
-        }
-        elseif ($_boost['menu_item']['status'] != 200) {
-            return ;
-        }
+      if (isset($_boost['cache_this']) && $_boost['cache_this'] == FALSE) {
+        return;
+      }
+      elseif (!isset($_boost['is_cacheable']) || !$_boost['is_cacheable']) {
+        return;
+      }
+      elseif ($_boost['menu_item']['status'] != 200) {
+        return;
+      }
     }
     /*
     @TODO: Drupal8 way
     elseif (!drupal_page_is_cacheable()) {
-      $_boost['is_cacheable'] = FALSE;
-      return;
+    $_boost['is_cacheable'] = FALSE;
+    return;
     }*/
 
     // Get the data to cache.
@@ -112,7 +107,7 @@ class ExitSubscriber implements EventSubscriberInterface {
       // TODO: Log
       // print "Data to cache is not valid";
       // die(0);
-      return ;
+      return;
     }
 
     // Add note to bottom of content if possible.
@@ -150,7 +145,7 @@ class ExitSubscriber implements EventSubscriberInterface {
       // Gzip support.
       if (BOOST_GZIP && $_boost['matched_header_info']['gzip']) {
         // #1416214 https://drupal.org/node/1416214#comment-7225650
-      // boost_write_file($_boost['filename'] . '.gz', gzencode($data, 9));
+        // boost_write_file($_boost['filename'] . '.gz', gzencode($data, 9));
       }
     }
   }

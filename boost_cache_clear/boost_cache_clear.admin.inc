@@ -4,6 +4,7 @@
  * @file
  * Define Administrator form to configure cache management.
  */
+
 /**
  * Validate the Boost clear URLs.
  */
@@ -15,11 +16,12 @@ function boost_cache_clear_confirm_validate($form, &$form_state) {
     }
   }
 }
+
 /**
  * Submit callback to add/update path in boost cache table.
  */
 function boost_cache_clear_confirm_submit($form, &$form_state) {
-  $data = array();
+  $data = [];
   $enable_bcc = empty($form_state['values']['enable_bcc']) ? 0 : 1;
   $data['content_type'] = !empty($form_state['values']['type']) ? $form_state['values']['type'] : '';
   $already_exist = boost_cache_clear_query_handle('count', $data);
@@ -39,6 +41,7 @@ function boost_cache_clear_confirm_submit($form, &$form_state) {
     boost_cache_clear_query_handle('delete', $data);
   }
 }
+
 /**
  * Submit callback to add/update path in boost cache table.
  */
@@ -49,6 +52,7 @@ function boost_cache_clear_confirm_delete($form, &$form_state) {
     boost_cache_clear_query_handle('delete', $data);
   }
 }
+
 /**
  * Custom function to Data manupulate on boost_cache_clear table.
  */
@@ -59,11 +63,11 @@ function boost_cache_clear_query_handle($type, $data) {
       // TODO: Drupal Rector Notice: Please delete the following comment after you've made any necessary changes.
       // You will need to use `\Drupal\core\Database\Database::getConnection()` if you do not yet have access to the container here.
       $return = \Drupal::database()->insert('boost_cache_clear')
-        ->fields(array(
+        ->fields([
           'id' => NULL,
           'content_type' => $data['content_type'],
           'pages' => $data['pages'],
-        ))
+        ])
         ->execute();
       break;
 
@@ -71,9 +75,9 @@ function boost_cache_clear_query_handle($type, $data) {
       // TODO: Drupal Rector Notice: Please delete the following comment after you've made any necessary changes.
       // You will need to use `\Drupal\core\Database\Database::getConnection()` if you do not yet have access to the container here.
       $return = \Drupal::database()->update('boost_cache_clear')
-        ->fields(array(
+        ->fields([
           'pages' => $data['pages'],
-        ))
+        ])
         ->condition('content_type', $data['content_type'])
         ->execute();
       break;
@@ -90,7 +94,7 @@ function boost_cache_clear_query_handle($type, $data) {
       // TODO: Drupal Rector Notice: Please delete the following comment after you've made any necessary changes.
       // You will need to use `\Drupal\core\Database\Database::getConnection()` if you do not yet have access to the container here.
       $return = \Drupal::database()->select('boost_cache_clear', 'bcc')
-        ->fields('bcc', array('pages'))
+        ->fields('bcc', ['pages'])
         ->condition('content_type', $data['content_type'])
         ->execute()
         ->fetchField();
@@ -110,6 +114,7 @@ function boost_cache_clear_query_handle($type, $data) {
   }
   return $return;
 }
+
 /**
  * Form constructor for the Boost Cache Clear form.
  *
@@ -117,20 +122,21 @@ function boost_cache_clear_query_handle($type, $data) {
  * @see boost_cache_clear_settings_form_submit()
  */
 function boost_cache_clear_settings_form() {
-  $form['path'] = array(
+  $form['path'] = [
     '#type' => 'textfield',
     '#size' => 120,
     '#maxlength' => 250,
     '#required' => TRUE,
     '#title' => t('Clear Boost'),
     '#description' => t('Enter valid URL alias for clear Boost cache. The "*" character is a wildcard. Example paths are blog for the blog page and blog/* for every personal blog and blog?page=* for query strings. / is the front page. "*" is for clear entire boost cache'),
-  );
-  $form['submit'] = array(
+  ];
+  $form['submit'] = [
     '#type' => 'submit',
     '#value' => t('Clear'),
-  );
+  ];
   return $form;
 }
+
 /**
  * Form validation handler for boost_cache_clear_settings_form().
  *
@@ -142,6 +148,7 @@ function boost_cache_clear_settings_form_validate(&$form, &$form_state) {
     form_set_error('path', t('Please enter valid URL.'));
   }
 }
+
 /**
  * Form submission handler for boost_cache_clear_settings_form().
  *
@@ -152,6 +159,7 @@ function boost_cache_clear_settings_form_submit(&$form, &$form_state) {
   boost_cache_clear_by_url($path);
   \Drupal::messenger()->addStatus(t('Boost cache cleared successfully!'));
 }
+
 /**
  * Custom function for Validate URLs.
  */
