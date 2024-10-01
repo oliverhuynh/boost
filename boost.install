@@ -4,40 +4,34 @@
  * @file
  * Handles Boost module installation and upgrade tasks.
  */
-
 //////////////////////////////////////////////////////////////////////////////
 // Core API hooks
 use Drupal\Core\Url;
-
 /**
  * Implements hook_enable().
  */
 function boost_enable() {
   boost_htaccess_cache_dir_put();
 }
-
 /**
  * Implements hook_disable().
  */
 function boost_disable() {
   // Make sure that the static page cache is wiped when the module is disabled:
   boost_flush_caches();
-  drupal_set_message(t('Static page cache cleared.'));
+  \Drupal::messenger()->addStatus(t('Static page cache cleared.'));
 }
-
 /**
  * Implements hook_install().
  */
 function boost_install() {
 }
-
 /**
  * Implements hook_uninstall().
  */
 function boost_uninstall() {
   \Drupal::cache('bootstrap')->deleteAll();
 }
-
 /**
  * Implements hook_requirements().
  */
@@ -53,7 +47,7 @@ function boost_requirements($phase) {
         'title' => $t('Boost'),
         'value' => $t('Core cache is enabled'),
         'severity' => REQUIREMENT_WARNING,
-        'description' => $t('Boost will not function properly while Drupal core cache is enabled. Disable Boost or <a href="@settings">the core cache</a>.', array('@settings' => \Drupal\Core\Url::fromRoute('system.performance_settings'))),
+        'description' => $t('Boost will not function properly while Drupal core cache is enabled. Disable Boost or <a href="@settings">the core cache</a>.', array('@settings' => Url::fromRoute('system.performance_settings'))),
       );
     }
 
@@ -93,8 +87,6 @@ function boost_requirements($phase) {
   }
   return $requirements;
 }
-
-
 /**
  * Add the preload path script
  */

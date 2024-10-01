@@ -1,12 +1,12 @@
 <?php
+
 /**
  * @file
  * Define Administrator form to configure cache management.
  */
-
- /**
-  * Validate the Boost clear URLs.
-  */
+/**
+ * Validate the Boost clear URLs.
+ */
 function boost_cache_clear_confirm_validate($form, &$form_state) {
   $url_array = explode(PHP_EOL, $form_state['values']['page_clear_bcc']);
   foreach ($url_array as $urls) {
@@ -15,7 +15,6 @@ function boost_cache_clear_confirm_validate($form, &$form_state) {
     }
   }
 }
-
 /**
  * Submit callback to add/update path in boost cache table.
  */
@@ -40,7 +39,6 @@ function boost_cache_clear_confirm_submit($form, &$form_state) {
     boost_cache_clear_query_handle('delete', $data);
   }
 }
-
 /**
  * Submit callback to add/update path in boost cache table.
  */
@@ -58,7 +56,9 @@ function boost_cache_clear_query_handle($type, $data) {
   $return = '';
   switch ($type) {
     case 'insert':
-      $return = db_insert('boost_cache_clear')
+      // TODO: Drupal Rector Notice: Please delete the following comment after you've made any necessary changes.
+      // You will need to use `\Drupal\core\Database\Database::getConnection()` if you do not yet have access to the container here.
+      $return = \Drupal::database()->insert('boost_cache_clear')
         ->fields(array(
           'id' => NULL,
           'content_type' => $data['content_type'],
@@ -68,7 +68,9 @@ function boost_cache_clear_query_handle($type, $data) {
       break;
 
     case 'update':
-      $return = db_update('boost_cache_clear')
+      // TODO: Drupal Rector Notice: Please delete the following comment after you've made any necessary changes.
+      // You will need to use `\Drupal\core\Database\Database::getConnection()` if you do not yet have access to the container here.
+      $return = \Drupal::database()->update('boost_cache_clear')
         ->fields(array(
           'pages' => $data['pages'],
         ))
@@ -77,13 +79,17 @@ function boost_cache_clear_query_handle($type, $data) {
       break;
 
     case 'delete':
-      $return = db_delete('boost_cache_clear')
+      // TODO: Drupal Rector Notice: Please delete the following comment after you've made any necessary changes.
+      // You will need to use `\Drupal\core\Database\Database::getConnection()` if you do not yet have access to the container here.
+      $return = \Drupal::database()->delete('boost_cache_clear')
         ->condition('content_type', $data['content_type'])
         ->execute();
       break;
 
     case 'select':
-      $return = db_select('boost_cache_clear', 'bcc')
+      // TODO: Drupal Rector Notice: Please delete the following comment after you've made any necessary changes.
+      // You will need to use `\Drupal\core\Database\Database::getConnection()` if you do not yet have access to the container here.
+      $return = \Drupal::database()->select('boost_cache_clear', 'bcc')
         ->fields('bcc', array('pages'))
         ->condition('content_type', $data['content_type'])
         ->execute()
@@ -91,7 +97,9 @@ function boost_cache_clear_query_handle($type, $data) {
       break;
 
     case 'count':
-      $query = db_select('boost_cache_clear', 'bcc')
+      // TODO: Drupal Rector Notice: Please delete the following comment after you've made any necessary changes.
+      // You will need to use `\Drupal\core\Database\Database::getConnection()` if you do not yet have access to the container here.
+      $query = \Drupal::database()->select('boost_cache_clear', 'bcc')
         ->condition('content_type', $data['content_type']);
       $query->addExpression('COUNT(bcc.pages)');
       $return = $query->execute()->fetchField();
@@ -102,7 +110,6 @@ function boost_cache_clear_query_handle($type, $data) {
   }
   return $return;
 }
-
 /**
  * Form constructor for the Boost Cache Clear form.
  *
@@ -124,7 +131,6 @@ function boost_cache_clear_settings_form() {
   );
   return $form;
 }
-
 /**
  * Form validation handler for boost_cache_clear_settings_form().
  *
@@ -136,7 +142,6 @@ function boost_cache_clear_settings_form_validate(&$form, &$form_state) {
     form_set_error('path', t('Please enter valid URL.'));
   }
 }
-
 /**
  * Form submission handler for boost_cache_clear_settings_form().
  *
@@ -145,9 +150,8 @@ function boost_cache_clear_settings_form_validate(&$form, &$form_state) {
 function boost_cache_clear_settings_form_submit(&$form, &$form_state) {
   $path = $form_state['values']['path'];
   boost_cache_clear_by_url($path);
-  drupal_set_message(t('Boost cache cleared successfully!'));
+  \Drupal::messenger()->addStatus(t('Boost cache cleared successfully!'));
 }
-
 /**
  * Custom function for Validate URLs.
  */

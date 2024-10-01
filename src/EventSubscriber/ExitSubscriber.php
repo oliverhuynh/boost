@@ -118,8 +118,8 @@ class ExitSubscriber implements EventSubscriberInterface {
     // Add note to bottom of content if possible.
     if ($_boost['matched_header_info']['comment_start'] && $_boost['matched_header_info']['comment_end']) {
       $expire = $_boost['matched_header_info']['lifetime_max'];
-      $cached_at = date('Y-m-d H:i:s', REQUEST_TIME);
-      $expires_at = date('Y-m-d H:i:s', REQUEST_TIME + $expire);
+      $cached_at = date('Y-m-d H:i:s', \Drupal::time()->getRequestTime());
+      $expires_at = date('Y-m-d H:i:s', \Drupal::time()->getRequestTime() + $expire);
       $note = "\n" . $_boost['matched_header_info']['comment_start'] . 'Page cached by Boost @ ' . $cached_at . ', expires @ ' . $expires_at . ', lifetime ' . \Drupal::service("date.formatter")->formatInterval($expire) . $_boost['matched_header_info']['comment_end'];
       $data .= $note;
     }

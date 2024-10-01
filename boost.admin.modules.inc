@@ -5,7 +5,6 @@
  * Displays compatible modules for boost, descriptions of functionality and
  * links if not installed.
  */
-
 /**
  * Returns a table listing of the status of recommended modules.
  */
@@ -14,7 +13,9 @@ function boost_compatible_output() {
   $modules_disabled = array();
 
   // Query from the database in case modules are already installed but not enabled
-  $result = db_query("SELECT name, status FROM {system} WHERE type = 'module' ORDER BY weight ASC, name ASC");
+  // TODO: Drupal Rector Notice: Please delete the following comment after you've made any necessary changes.
+  // You will need to use `\Drupal\core\Database\Database::getConnection()` if you do not yet have access to the container here.
+  $result = \Drupal::database()->query("SELECT name, status FROM {system} WHERE type = 'module' ORDER BY weight ASC, name ASC");
   foreach ($result as $record) {
     if ($record->status == 1) {
       $modules_enabled[] = $record->name;

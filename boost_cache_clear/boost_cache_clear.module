@@ -1,4 +1,7 @@
 <?php
+use Drupal\Core\Form\FormStateInterface;
+use Drupal\node\NodeInterface;
+use Drupal\comment\CommentInterface;
 /**
  * @file
  * Define permissions, Menus, Hooks for Boost cache clear.
@@ -35,7 +38,7 @@ function boost_cache_clear_permission() {
 /**
  * Implements hook_form_alter().
  */
-function boost_cache_clear_form_alter(&$form, \Drupal\Core\Form\FormStateInterface &$form_state, $form_id) {
+function boost_cache_clear_form_alter(&$form, FormStateInterface &$form_state, $form_id) {
   module_load_include('inc', 'boost_cache_clear', 'boost_cache_clear.admin');
   if ($form_id == 'node_type_form') {
     $enable_bcc = '';
@@ -88,7 +91,7 @@ function boost_cache_clear_form_alter(&$form, \Drupal\Core\Form\FormStateInterfa
 /**
  * Implements hook_node_insert().
  */
-function boost_cache_clear_node_insert(\Drupal\node\NodeInterface $node) {
+function boost_cache_clear_node_insert(NodeInterface $node) {
   $content_type = $node->getType();
   $nid = $node->id();
   boost_cache_clear_urls_generate($content_type, $nid);
@@ -97,7 +100,7 @@ function boost_cache_clear_node_insert(\Drupal\node\NodeInterface $node) {
 /**
  * Implements hook_node_update().
  */
-function boost_cache_clear_node_update(\Drupal\node\NodeInterface $node) {
+function boost_cache_clear_node_update(NodeInterface $node) {
   $content_type = $node->getType();
   $nid = $node->id();
   boost_cache_clear_urls_generate($content_type, $nid);
@@ -106,7 +109,7 @@ function boost_cache_clear_node_update(\Drupal\node\NodeInterface $node) {
 /**
  * Implements hook_node_delete().
  */
-function boost_cache_clear_node_delete(\Drupal\node\NodeInterface $node) {
+function boost_cache_clear_node_delete(NodeInterface $node) {
   $content_type = $node->getType();
   $nid = $node->id();
   boost_cache_clear_urls_generate($content_type, $nid);
@@ -115,7 +118,7 @@ function boost_cache_clear_node_delete(\Drupal\node\NodeInterface $node) {
 /**
  * Implements hook_comment_insert().
  */
-function boost_cache_clear_comment_insert(\Drupal\comment\CommentInterface $comment) {
+function boost_cache_clear_comment_insert(CommentInterface $comment) {
   $content_type = str_replace("comment_node_", "", $comment->node_type);
   $nid = $comment->nid;
   boost_cache_clear_urls_generate($content_type, $nid);
@@ -124,7 +127,7 @@ function boost_cache_clear_comment_insert(\Drupal\comment\CommentInterface $comm
 /**
  * Implements hook_comment_update().
  */
-function boost_cache_clear_comment_update(\Drupal\comment\CommentInterface $comment) {
+function boost_cache_clear_comment_update(CommentInterface $comment) {
   $content_type = str_replace("comment_node_", "", $comment->node_type);
   $nid = $comment->nid;
   boost_cache_clear_urls_generate($content_type, $nid);
@@ -133,7 +136,7 @@ function boost_cache_clear_comment_update(\Drupal\comment\CommentInterface $comm
 /**
  * Implements hook_comment_delete().
  */
-function boost_cache_clear_comment_delete(\Drupal\comment\CommentInterface $comment) {
+function boost_cache_clear_comment_delete(CommentInterface $comment) {
   $content_type = str_replace("comment_node_", "", $comment->node_type);
   $nid = $comment->nid;
   boost_cache_clear_urls_generate($content_type, $nid);
@@ -152,7 +155,7 @@ function boost_cache_clear_urls_generate($content_type, $nid) {
       // $pages = boost_cache_clear_query_handle('select', $data);
       // $urls = explode(PHP_EOL, $pages);
     $urls = ['/node/' . $nid];
-    $item = \Drupal::service('path.alias_manager');
+    $item = \Drupal::service('path_alias.manager');
     $urls[] = $item->getAliasByPath('/node/' . $nid);
     foreach ($urls as $value) {
       boost_cache_clear_by_url($value);

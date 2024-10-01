@@ -68,7 +68,6 @@ function boost_block_view_status() {
 
   return $block;
 }
-
 function boost_block_flush_form() {
   $form = array();
 
@@ -79,7 +78,6 @@ function boost_block_flush_form() {
 
   return $form;
 }
-
 function boost_block_flush_form_submit() {
   $_boost = boost_transform_url();
 
@@ -91,14 +89,13 @@ function boost_block_flush_form_submit() {
 
   if (is_file($filename)) {
     if (unlink($filename)) {
-      drupal_set_message(t('%filename was deleted from the Boost cache', array('%filename' => $filename)));
+      \Drupal::messenger()->addStatus(t('%filename was deleted from the Boost cache', array('%filename' => $filename)));
     }
     else {
-      drupal_set_message(t('%filename could not be deleted, check file permissions on disk to see if the web server can write/delete the file.', array('%filename' => $filename)));
+      \Drupal::messenger()->addStatus(t('%filename could not be deleted, check file permissions on disk to see if the web server can write/delete the file.', array('%filename' => $filename)));
     }
   }
   else {
-    drupal_set_message(t('%filename was not found in the Boost cache and could not be deleted.', array('%filename' => $filename)));
+    \Drupal::messenger()->addStatus(t('%filename was not found in the Boost cache and could not be deleted.', array('%filename' => $filename)));
   }
 }
-

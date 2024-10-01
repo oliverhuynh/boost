@@ -1,6 +1,8 @@
 <?php
 
-/**
+use Drupal\Core\Form\FormStateInterface;
+ use Symfony\Component\HttpFoundation\Response;
+ /**
  * @file
  * Caches generated output as a static file to be served directly from the
  * webserver.
@@ -211,7 +213,7 @@ function boost_init() {
 /**
  * Implements hook_form_alter().
  */
-function boost_form_alter(&$form, \Drupal\Core\Form\FormStateInterface &$form_state, $form_id) {
+function boost_form_alter(&$form, FormStateInterface &$form_state, $form_id) {
   global $_boost;
 
   if (! empty($_boost['cache_this'])) {
@@ -278,8 +280,8 @@ function boost_exit($destination = NULL) {
   // Add note to bottom of content if possible.
   if ($_boost['matched_header_info']['comment_start'] && $_boost['matched_header_info']['comment_end']) {
     $expire = $_boost['matched_header_info']['lifetime_max'];
-    $cached_at = date('Y-m-d H:i:s', REQUEST_TIME);
-    $expires_at = date('Y-m-d H:i:s', REQUEST_TIME + $expire);
+    $cached_at = date('Y-m-d H:i:s', \Drupal::time()->getRequestTime());
+    $expires_at = date('Y-m-d H:i:s', \Drupal::time()->getRequestTime() + $expire);
     $note = "\n" . $_boost['matched_header_info']['comment_start'] . 'Page cached by Boost @ ' . $cached_at . ', expires @ ' . $expires_at . ', lifetime ' . \Drupal::service("date.formatter")->formatInterval($expire) . $_boost['matched_header_info']['comment_end'];
     $data .= $note;
   }
@@ -456,14 +458,14 @@ function boost_transform_url($url = NULL, $b_path = NULL) {
       $parts['normal_path'] = Drupal::config('system.site')->get('page.front');
     }
     else {
-      $parts['normal_path'] = \Drupal::service('path.alias_manager')->getPathByAlias($parts['path'], 'en');
+      $parts['normal_path'] = \Drupal::service('path_alias.manager')->getPathByAlias($parts['path'], 'en');
     }
     // Get the alias (content/about-us).
     // Ensure slash first
     if (!$parts['normal_path'] || $parts['normal_path'][0] != '/') {
       $parts['normal_path'] = '/' . $parts['normal_path'];
     }
-    $parts['path_alias'] = \Drupal::service('path.alias_manager')->getAliasByPath($parts['normal_path'], 'en');
+    $parts['path_alias'] = \Drupal::service('path_alias.manager')->getAliasByPath($parts['normal_path'], 'en');
     // Get all args.
     $args = explode('/', $parts['normal_path']);
     array_shift($args);
@@ -641,10 +643,10 @@ function boost_is_cacheable($parts, $request_type = 'normal') {
   $pages_setting = \Drupal::config('boost.settings')->get('boost_cacheability_pages');
   $pages_setting = $pages_setting ? $pages_setting : '';
   //if ($pages_setting) {
-    $pages = \Drupal\Component\Utility\Unicode::strtolower($pages_setting);
+    $pages = mb_strtolower($pages_setting);
     if ($visibility < BOOST_VISIBILITY_PHP) {
       // Convert the alias to lowercase.
-      $path = \Drupal\Component\Utility\Unicode::strtolower($alias);
+      $path = mb_strtolower($alias);
       $testpath = $path;
       if ($testpath[0] == '/') {
         $testpath = substr($testpath, 1);
@@ -740,7 +742,7 @@ function boost_boost_is_cacheable($parts, $request_type = 'normal') {
 function boost_set_cookie($uid, $expires = NULL) {
   if (!$expires) {
     $expires = ini_get('session.cookie_lifetime');
-    $expires = (!empty($expires) && is_numeric($expires)) ? REQUEST_TIME + (int)$expires : 0;
+    $expires = (!empty($expires) && is_numeric($expires)) ? \Drupal::time()->getRequestTime() + (int)$expires : 0;
     setcookie(BOOST_COOKIE, strval($uid), $expires, ini_get('session.cookie_path'), ini_get('session.cookie_domain'), ini_get('session.cookie_secure') == '1');
   }
   else {
@@ -763,7 +765,7 @@ function boost_cookie_handler() {
   $uid = $user->id();
   // Remove Boost cookie at logout if it still exists.
   if (isset($_COOKIE[BOOST_COOKIE]) && $uid == 0) {
-    boost_set_cookie($uid, REQUEST_TIME - 86400);
+    boost_set_cookie($uid, \Drupal::time()->getRequestTime() - 86400);
   }
   // Set Boost cookie if it doesn't exists (or is -1 likely because of a login POST) and user is logged in.
   // c.f. Issue #1616356 comment #7
@@ -772,7 +774,7 @@ function boost_cookie_handler() {
   }
   // Remove Boost cookie if set to -1 & Request Method is a GET/HEAD.
   elseif (isset($_COOKIE[BOOST_COOKIE]) && $_COOKIE[BOOST_COOKIE] == '-1' && ($_SERVER['REQUEST_METHOD'] == 'GET' || $_SERVER['REQUEST_METHOD'] == 'HEAD')) {
-    boost_set_cookie($uid, REQUEST_TIME - 86400);
+    boost_set_cookie($uid, \Drupal::time()->getRequestTime() - 86400);
   }
 
   // Issue #1242416: Set a nocache cookie on a POST, remove it immediately after
@@ -890,7 +892,7 @@ function _boost_get_menu_router($parts) {
 function boost_boost_menu_router($parts) {
   // Handle nodes.
   if ($parts['args'][0] == 'node' && is_numeric($parts['args'][1])) {
-    $node = \Drupal::entityManager()->getStorage('node')->load($parts['args'][1]);
+    $node = \Drupal::service('entity_type.manager')->getStorage('node')->load($parts['args'][1]);
     $parts['menu_item']['page_callback'] = 'node';
     $parts['menu_item']['page_id'] = $parts['args'][1];
     if ($node) {
@@ -901,11 +903,11 @@ function boost_boost_menu_router($parts) {
 
   // Handle taxonomy.
   if ($parts['args'][0] == 'taxonomy' && is_numeric($parts['args'][2])) {
-    $term = \Drupal::entityManager()->getStorage("taxonomy_term")->load($parts['args'][2]);
+    $term = \Drupal::service('entity_type.manager')->getStorage("taxonomy_term")->load($parts['args'][2]);
     $parts['menu_item']['page_callback'] = 'taxonomy';
     $parts['menu_item']['page_id'] = $parts['args'][2];
     if ($term) {
-      $vocab = taxonomy_vocabulary_load($term->vid);
+      $vocab = Drupal\taxonomy\Entity\Vocabulary::load($term->vid);
       $parts['menu_item']['page_type'] = $vocab->name;
     }
     return $parts;
@@ -913,7 +915,7 @@ function boost_boost_menu_router($parts) {
 
   // Handle users.
   if ($parts['args'][0] == 'user' && is_numeric($parts['args'][1])) {
-    $user = \Drupal::entityManager()->getStorage('user')->load($parts['args'][1]);
+    $user = \Drupal::service('entity_type.manager')->getStorage('user')->load($parts['args'][1]);
     $parts['menu_item']['page_callback'] = 'user';
     $parts['menu_item']['page_id'] = $parts['args'][1];
     if ($user !== FALSE) {
@@ -1023,7 +1025,7 @@ function boost_module_implements($hook, $name) {
  *   Contains info about the page that is about to be sent.
  */
 function boost_get_header_info() {
-  $response = new \Symfony\Component\HttpFoundation\Response();
+  $response = new Response();
   $headers = $response->headers->all();
   $status = '200 OK';
   $status_number = '200';
@@ -1344,7 +1346,7 @@ function _boost_rmdir($dir, $flush = TRUE) {
  * @return int
  */
 function boost_file_get_age($filename) {
-  return REQUEST_TIME - filemtime($filename);
+  return \Drupal::time()->getRequestTime() - filemtime($filename);
 }
 
 /**

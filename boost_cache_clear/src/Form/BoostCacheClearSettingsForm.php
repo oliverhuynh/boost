@@ -20,7 +20,7 @@ class BoostCacheClearSettingsForm extends FormBase {
     return 'boost_cache_clear_settings_form';
   }
 
-  public function buildForm(array $form, \Drupal\Core\Form\FormStateInterface $form_state) {
+  public function buildForm(array $form, FormStateInterface $form_state) {
     $form['path'] = [
       '#type' => 'textfield',
       '#size' => 120,
@@ -36,17 +36,17 @@ class BoostCacheClearSettingsForm extends FormBase {
     return $form;
   }
 
-  public function validateForm(array &$form, \Drupal\Core\Form\FormStateInterface $form_state) {
+  public function validateForm(array &$form, FormStateInterface $form_state) {
     $path = $form_state->getValue(['path']);
     if (!boost_cache_clear_valid_url($path)) {
       $form_state->setErrorByName('path', t('Please enter valid URL.'));
     }
   }
 
-  public function submitForm(array &$form, \Drupal\Core\Form\FormStateInterface $form_state) {
+  public function submitForm(array &$form, FormStateInterface $form_state) {
     $path = $form_state->getValue(['path']);
     boost_cache_clear_by_url($path);
-    drupal_set_message(t('Boost cache cleared successfully!'));
+    $this->messenger()->addStatus(t('Boost cache cleared successfully!'));
   }
 
 }

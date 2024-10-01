@@ -4,4 +4,5 @@ package: 'Performance and scalability'
 dependencies:
   - boost
 core: 8.x
+core_version_requirement: ^8 || ^9
 type: module

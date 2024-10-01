@@ -1,5 +1,6 @@
 <?php
 
+use Drupal\Core\Url;
 /**
  * @file
  * Admin page callbacks for the boost module.
@@ -78,7 +79,7 @@ $form['htaccess']['boost_server_name_http_host'] = array(
   }
   elseif (!isset($best)) {
     $best = $document_root;
-    $description_extra = t('Please <a href="!link">open an boost issue on Drupal.org</a>, since apache and php might not be configured correctly.', array('!link' => \Drupal\Core\Url::fromUri('http://drupal.org/node/add/project-issue/boost')));
+    $description_extra = t('Please <a href="!link">open an boost issue on Drupal.org</a>, since apache and php might not be configured correctly.', array('!link' => Url::fromUri('http://drupal.org/node/add/project-issue/boost')));
   }
   $percent = 0;
   $int = similar_text(substr(trim($_SERVER['DOCUMENT_ROOT']), 18, 1), substr(trim($document_root), 18, 1), $percent);
@@ -108,7 +109,7 @@ $form['htaccess']['boost_apache_etag'] = array(
       1 => "Set FileETag 'None' - Do not send an etag",
       0 => 'Do Nothing',
     ),
-    '#description'   => t('Uses <a href="!link">FileETag Directive</a> to set <a href="!about">ETags</a> for the files cached by Boost. <a href="!stack">More info on this subject</a>', array('!link' => \Drupal\Core\Url::fromUri('http://httpd.apache.org/docs/trunk/mod/core.html#fileetag'), '!about' => \Drupal\Core\Url::fromUri('http://en.wikipedia.org/wiki/HTTP_ETag'), '!stack' => \Drupal\Core\Url::fromUri('http://stackoverflow.com/questions/tagged?tagnames=etag&sort=votes&pagesize=50'))),
+    '#description'   => t('Uses <a href="!link">FileETag Directive</a> to set <a href="!about">ETags</a> for the files cached by Boost. <a href="!stack">More info on this subject</a>', array('!link' => Url::fromUri('http://httpd.apache.org/docs/trunk/mod/core.html#fileetag'), '!about' => Url::fromUri('http://en.wikipedia.org/wiki/HTTP_ETag'), '!stack' => Url::fromUri('http://stackoverflow.com/questions/tagged?tagnames=etag&sort=votes&pagesize=50'))),
   );
   // @FIXME
 // Could not extract the default value because it is either indeterminate, or
