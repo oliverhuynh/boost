@@ -1,7 +1,7 @@
 <?php
 
 use Drupal\Core\Form\FormStateInterface;
- use Symfony\Component\HttpFoundation\Response;
+use Symfony\Component\HttpFoundation\Response;
  /**
  * @file
  * Caches generated output as a static file to be served directly from the
@@ -97,6 +97,8 @@ define('BOOST_VISIBILITY_PHP', 2);
  * +SymlinksIfOwnerMatch to avoid http 500 error.
  */
 define('BOOST_MATCH_SYMLINKS_OPTIONS', 1);
+ 
+define('WATCHDOG_DEBUG', 2);
 
 /**
  * @FIXME
