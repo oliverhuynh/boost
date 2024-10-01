@@ -1,0 +1,19 @@
+{
+    "name": "oliverhuynh/boost",
+    "type": "drupal-module",
+    "description": "Boost provides static page caching",
+    "keywords": ["Drupal"],
+    "license": "GPL-2.0-or-later",
+    "homepage": "https://www.drupal.org/project/boost",
+    "support": {
+        "issues": "https://www.drupal.org/project/issues/boost",
+        "source": "http://cgit.drupalcode.org/boost"
+    },
+    "extra": {
+        "drush": {
+            "services": {
+              "drush.services.yml": "^9 || ^10 || ^11"
+            }
+        }
+    }
+}
