@@ -67,6 +67,12 @@ class BoostAdminSettingsForm extends ConfigFormBase {
       '#description' => $description,
     ];
 
+    $form['extra_clear'] = [
+      '#type'          => 'textfield',
+      '#title'         => t('Extra clear'),
+      '#default_value' => $config->get('extra_clear'),
+    ];
+
     $types = boost_get_storage_types();
     $_tmp = [0, 60, 180, 300, 600, 900, 1800, 2700, 3600, 10800, 21600, 32400, 43200, 64800, 86400, 2 * 86400, 3 * 86400, 4 * 86400, 5 * 86400, 6 * 86400, 604800, 2 * 604800, 3 * 604800, 4 * 604800, 8 * 604800, 16 * 604800, 52 * 604800];
     $period = array_map([\Drupal::service('date.formatter'), 'formatInterval'], array_combine($_tmp, $_tmp));

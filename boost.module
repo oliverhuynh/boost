@@ -367,9 +367,10 @@ function boost_cache_flush() {
  * Implements hook_flush_caches(). Deletes all static files.
  */
 function boost_flush_caches() {
-  // @TODO: Oliver
-  return;
-  return;
+  global $base_root;
+  $_boost = boost_transform_url($base_root . '/');
+  $count = _boost_rmdir($_boost['directory'], TRUE);
+  \Drupal::logger('boost_cache_clear')->info('%count files removed from boost cache %dir', ['%count' => $count, '%path' => $path, '%dir' => $_boost['directory']]);
 }
 
 /**

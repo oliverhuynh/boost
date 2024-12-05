@@ -7,6 +7,7 @@
 use Drupal\Core\Form\FormStateInterface;
 use Drupal\node\NodeInterface;
 use Drupal\comment\CommentInterface;
+use Drupal\Core\Url;
 
 /**
  * @file
@@ -17,7 +18,7 @@ use Drupal\comment\CommentInterface;
  * Implements hook_menu().
  */
 function boost_cache_clear_menu() {
-  $items = [];
+  $items = 
   $items['admin/config/system/boost-cache-clear'] = [
     'title' => 'Boost cache clear',
     'description' => 'Clear Boost cache by passing their URL alias.',
@@ -152,6 +153,17 @@ function boost_cache_clear_comment_delete(CommentInterface $comment) {
  * Custom function to clear the cached pages.
  */
 function boost_cache_clear_urls_generate($content_type, $nid) {
+  $urls = ['/node/' . $nid];
+  $pm = \Drupal::service('path_alias.manager');
+  \Drupal::logger('boost_cache_clear')->info('Calling generate %content_type %nid', ['%content_type' => $content_type, '%nid' => $nid]);
+  $boost_cache_clear_extra = \Drupal::config('boost.settings')->get('extra_clear');
+  $items = explode(',', $boost_cache_clear_extra);
+
+  if ($items) {
+    foreach ($items as $item) {
+      $urls[] = $item;
+    }
+  }
 
   // @TODO: Check the handle
   // module_load_include('inc', 'boost_cache_clear', 'boost_cache_clear.admin');
@@ -160,9 +172,8 @@ function boost_cache_clear_urls_generate($content_type, $nid) {
   // if ($enable_bcc) {
   // $pages = boost_cache_clear_query_handle('select', $data);
   // $urls = explode(PHP_EOL, $pages);
-  $urls = ['/node/' . $nid];
-  $item = \Drupal::service('path_alias.manager');
-  $urls[] = $item->getAliasByPath('/node/' . $nid);
+  $urls[] = $pm->getAliasByPath('/node/' . $nid);
+  $urls[] = Url::fromRoute('entity.node.canonical', ['node' => $nid])->toString();
   foreach ($urls as $value) {
     boost_cache_clear_by_url($value);
   }
@@ -179,10 +190,26 @@ function boost_cache_clear_by_url($url) {
   if ($url == '*') {
     boost_flush_caches();
   }
-  elseif ($last_arg == '*') {
-    // Handle boost Directories, like search/*, blog/*,..
-    $dir_path = $base_root . '/' . $url;
+  elseif (strpos($url, '*') !== FALSE) {
+    $pattern = $url;
+    \Drupal::logger('boost_cache_clear')->info('%pattern scanning', ['%pattern' => $pattern]);
+    $dir_path = $base_root . '/';
     $_boost = boost_transform_url($dir_path);
+    $dir = $_boost['directory'];
+
+    // Escape special characters except '*' and '?'
+    $pattern = str_replace(['*', '?'], ['\*', '\?'], $pattern);
+    
+    // Glob with GLOB_BRACE flag for wildcard support
+    $matching_files = glob($dir . '/' . $pattern, GLOB_BRACE);
+    
+    // Iterate through the matching files
+    foreach ($matching_files as $file) {
+        // Perform operations on each matching file
+        \Drupal::logger('boost_cache_clear')->info('%file found', ['%file' => $file]);
+    }
+
+    // Handle boost Directories, like search/*, blog/*,..
     if (file_exists($_boost['directory'])) {
       $count = _boost_rmdir($_boost['directory'], TRUE);
       \Drupal::logger('boost_cache_clear')->info('%count files removed from boost cache', ['%count' => $count]);
@@ -204,10 +231,12 @@ function boost_cache_clear_by_url($url) {
       // Handle Boost files. ex: node/123, example,..
       $filename_array[] = $file_url;
     }
+
     foreach ($filename_array as $file_path) {
+      \Drupal::logger('boost_cache_clear')->info('Removing %file from the boost cache.', ['%file' => $file_path]);
       if (file_exists($file_path)) {
         if (unlink($file_path)) {
-          boost_log('Removed !file from the boost cache.', ['!file' => $file_path], WATCHDOG_DEBUG);
+          \Drupal::logger('boost_cache_clear')->info('Removed !file from the boost cache.', ['!file' => $file_path]);
         }
       }
     }
