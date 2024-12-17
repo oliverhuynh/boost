@@ -37,11 +37,24 @@ class ExitSubscriber implements EventSubscriberInterface {
     ];
   }
 
+  public function messagesAvailable() {
+    $messenger = \Drupal::messenger();
+    $messages = $messenger->all();
+    
+    return !empty($messages);
+  }
+
+
   public function onEvent(FilterResponseEvent $event) {
     global $_boost;
     // Bypass caching on redirects (issues #1176534 and #1957532).
     if (\Drupal::currentUser()->id()) {
       return;
+    }
+
+    // Bypass caching if there are messages
+    if ($this->messagesAvailable()) {
+      return;                                               
     }
 
     $response = $event->getResponse();
